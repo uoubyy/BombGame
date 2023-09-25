@@ -1,6 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "BombGameCharacter.h"
+#include "BGCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
@@ -11,7 +11,7 @@
 #include "Materials/Material.h"
 #include "Engine/World.h"
 
-ABombGameCharacter::ABombGameCharacter()
+ABGCharacter::ABGCharacter()
 {
 	// Set size for player capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -45,7 +45,7 @@ ABombGameCharacter::ABombGameCharacter()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
-void ABombGameCharacter::Tick(float DeltaSeconds)
+void ABGCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 }

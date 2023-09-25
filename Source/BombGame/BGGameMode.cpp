@@ -1,14 +1,14 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "BombGameGameMode.h"
-#include "BombGamePlayerController.h"
-#include "BombGameCharacter.h"
+#include "BGGameMode.h"
+#include "BGPlayerController.h"
+#include "BGCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
-ABombGameGameMode::ABombGameGameMode()
+ABGGameMode::ABGGameMode()
 {
 	// use our custom PlayerController class
-	PlayerControllerClass = ABombGamePlayerController::StaticClass();
+	PlayerControllerClass = ABGPlayerController::StaticClass();
 
 	// set default pawn class to our Blueprinted character
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/TopDown/Blueprints/BP_TopDownCharacter"));
