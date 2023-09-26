@@ -33,6 +33,11 @@ void ABGConveyorBase::Tick(float DeltaTime)
 
 }
 
+const FVector ABGConveyorBase::GetNewBombSpawnPosition()
+{
+	return FVector::Zero();
+}
+
 const FVector ABGConveyorBase::GetRightSideEndPosition()
 {
 	return RightSideEndPoint->GetComponentLocation();

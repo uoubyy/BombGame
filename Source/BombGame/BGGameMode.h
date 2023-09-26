@@ -13,6 +13,19 @@ class ABGGameMode : public AGameModeBase
 
 public:
 	ABGGameMode();
+
+	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
+	void RegisterConveyor(int32 ConveyorId, class ABGConveyorBase* ConveyorRef);
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
+	class ABGConveyorBase* GetConveyorrefById(int32 ConveyorId);
+
+private:
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Game Mode")
+	TMap<int32, class ABGConveyorBase*> AllConveyors;
 };
 
 

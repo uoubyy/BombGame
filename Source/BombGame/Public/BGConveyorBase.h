@@ -42,6 +42,9 @@ public:
 	const int32 GetConveyorId() const { return ConveyorId; }
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
+	const FVector GetNewBombSpawnPosition();
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
 	const FVector GetLeftSideEndPosition();
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
