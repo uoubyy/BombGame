@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+
 #include "BGPlayerController.h"
 #include "BGCharacter.h"
 #include "BGConveyorBase.h"
+
 #include "BGGameplayEnum.h"
 #include "BGGameMode.generated.h"
 
@@ -20,6 +22,10 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	virtual void StartPlay() override;
+
+	virtual APlayerController* Login(UPlayer* NewPlayer, ENetRole InRemoteRole, const FString& Portal, const FString& Options, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage) override;
 
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
 
@@ -64,6 +70,9 @@ private:
 	EGameState GameState;
 
 	int ReadyPlayers;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Game Mode")
+	TObjectPtr<class ABGBombSpawnManager> BombSpawnManager;
 };
 
 
