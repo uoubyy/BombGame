@@ -86,10 +86,7 @@ void ABGGameMode::RegisterConveyor(int32 ConveyorId, class ABGConveyorBase* Conv
 
 void ABGGameMode::BeginPlay()
 {
-	while (!AllPlayersReady())
-	{
-
-	}
+	Super::BeginPlay();
 }
 
 ABGConveyorBase* ABGGameMode::GetConveyorrefById(int32 ConveyorId)
