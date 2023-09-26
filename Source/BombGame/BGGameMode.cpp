@@ -17,6 +17,7 @@ ABGGameMode::ABGGameMode()
 	CountdownTime = 10000;
 	GameState = EGameState::GS_Idle;
 	ReadyPlayers = 0;
+ 	ReadyPlayerDelegate.AddDynamic(this, &ABGGameMode::UpdateReadyPlayers);
 }
 
 void ABGGameMode::StartPlay()
@@ -86,10 +87,7 @@ void ABGGameMode::RegisterConveyor(int32 ConveyorId, class ABGConveyorBase* Conv
 
 void ABGGameMode::BeginPlay()
 {
-	while (!AllPlayersReady())
-	{
-
-	}
+	Super::BeginPlay();
 }
 
 ABGConveyorBase* ABGGameMode::GetConveyorrefById(int32 ConveyorId)
@@ -127,6 +125,18 @@ ABGCharacter* ABGGameMode::GetCharacterRefById(int32 CharacterId)
 	return nullptr;
 }
 
+void ABGGameMode::UpdateReadyPlayers()
+{
+	ReadyPlayers ++;
+	bool PlayerNumsCheck = ReadyPlayers > PlayerNums ? false : true;
+	ensureMsgf(PlayerNumsCheck == false, TEXT("Ready Player numbers are out of range: %d"), ReadyPlayers);
+
+	if (PlayerNumsCheck)
+	{
+		return;
+	}
+}
+
 EGameState ABGGameMode::GetGameState()
 {
 	return GameState;
@@ -134,7 +144,7 @@ EGameState ABGGameMode::GetGameState()
 
 bool ABGGameMode::AllPlayersReady()
 {
-	return false;
+	return ReadyPlayers == PlayerNums ? true : false;
 }
 
 void ABGGameMode::Tick(float DeltaTime)

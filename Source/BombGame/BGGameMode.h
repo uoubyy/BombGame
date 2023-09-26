@@ -12,6 +12,8 @@
 #include "BGGameplayEnum.h"
 #include "BGGameMode.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReadyPlayerDelegate);
+
 UCLASS(minimalapi)
 class ABGGameMode : public AGameModeBase
 {
@@ -42,10 +44,20 @@ public:
 	class ABGCharacter* GetCharacterRefById(int32 CharacterId);
 
 	UFUNCTION(BlueprintCallable)
+	void UpdateReadyPlayers();
+
+	UFUNCTION(BlueprintCallable)
 	EGameState GetGameState();
 
 	UFUNCTION(BlueprintCallable)
 	bool AllPlayersReady();
+
+	// Total countdown time
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
+	float CountdownTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
+	int PlayerNums;
 
 
 protected:
@@ -62,13 +74,10 @@ private:
 
 	// Elapsed time
 	float ElapsedTime;
-	// Total countdown time
-	int32 CountdownTime;
 	// Timer handle
 	FTimerHandle CountdownTimerHandle;
-
 	EGameState GameState;
-
+	FReadyPlayerDelegate ReadyPlayerDelegate;
 	int ReadyPlayers;
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Game Mode")
