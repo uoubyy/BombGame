@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "../BGGameplayEnum.h"
+#include "Components/BoxComponent.h"
 #include "BGConveyorBase.generated.h"
 
 UCLASS()
@@ -25,10 +26,13 @@ protected:
 	class UStaticMeshComponent* MeshComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	class USceneComponent* LeftSideEndPoint;
+	class UBoxComponent* LeftSideEndPoint;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	class USceneComponent* RightSideEndPoint;
+	class UBoxComponent* RightSideEndPoint;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bomb Game|Conveyor")
+	ETeamId LastPressedTeam;
 
 	virtual void BeginPlay() override;
 
@@ -59,6 +63,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Bomb Game|Conveyor")
 	void K2_OnMovingDirectionChanged();
 
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
+	void OnConveyorTapped(class ABGCharacter* SourcePlayer);
+
 protected:
 	
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Conveyor")
@@ -69,4 +76,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Conveyor")
 	EConveyorDirection CurrentMovingDirection;
+
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Conveyor")
+	//ETeam LastPressedTeam;
+
+	void UpdateDirectionBasedOnTeam();
 };
