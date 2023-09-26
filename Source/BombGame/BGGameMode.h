@@ -59,6 +59,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
 	int PlayerNums;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
+	FReadyPlayerDelegate ReadyPlayerDelegate;
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -77,7 +80,7 @@ private:
 	// Timer handle
 	FTimerHandle CountdownTimerHandle;
 	EGameState GameState;
-	FReadyPlayerDelegate ReadyPlayerDelegate;
+
 	int ReadyPlayers;
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Game Mode")
