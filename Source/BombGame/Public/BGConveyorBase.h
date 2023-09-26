@@ -31,7 +31,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UBoxComponent* RightSideEndPoint;
 
-	TPair<int32, ETeam>LastPressedTeam;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bomb Game|Conveyor")
+	ETeamId LastPressedTeam;
+
 	virtual void BeginPlay() override;
 
 public:	

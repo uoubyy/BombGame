@@ -3,6 +3,8 @@
 
 #include "BGConveyorBase.h"
 #include "../BGGameMode.h"
+#include "../BGPlayerState.h"
+#include "../BGCharacter.h"
 
 ABGConveyorBase::ABGConveyorBase()
 {
@@ -15,16 +17,20 @@ ABGConveyorBase::ABGConveyorBase()
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	MeshComponent->SetupAttachment(SceneRoot);
 
-	LeftSideEndPoint = CreateDefaultSubobject<USceneComponent>(TEXT("LeftSideEndPoint"));
+	LeftSideEndPoint = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftSideEndPoint"));
 	LeftSideEndPoint->SetupAttachment(SceneRoot);
 
-	RightSideEndPoint = CreateDefaultSubobject<USceneComponent>(TEXT("RightSideEndPoint"));
+	RightSideEndPoint = CreateDefaultSubobject<UBoxComponent>(TEXT("RightSideEndPoint"));
 	RightSideEndPoint->SetupAttachment(SceneRoot);
+	
 }
 
 void ABGConveyorBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CurrentMovingDirection = (ConveyorId % 2 == 0) ? EConveyorDirection::CD_Right : EConveyorDirection::CD_Left;
+
 	
 	ABGGameMode* BGGameMode = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode());
 
@@ -44,6 +50,11 @@ void ABGConveyorBase::Tick(float DeltaTime)
 
 }
 
+void ABGConveyorBase::OnConveyorTapped(class ABGCharacter* SourcePlayer)
+{
+	LastPressedTeam = SourcePlayer->GetPlayerState<ABGPlayerState>().GetPlayerTeamId();
+}
+
 const FVector ABGConveyorBase::GetNewBombSpawnPosition_Implementation()
 {
 	return FVector::Zero(); // TODO: override in Blueprint
@@ -52,6 +63,15 @@ const FVector ABGConveyorBase::GetNewBombSpawnPosition_Implementation()
 const FVector ABGConveyorBase::GetRightSideEndPosition()
 {
 	return RightSideEndPoint->GetComponentLocation();
+}
+
+void ABGConveyorBase::UpdateDirectionBasedOnTeam()
+{
+
+	ABGGameMode* BGGameMode = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode());
+
+	CurrentMovingDirection = (LastPressedTeam == ETeamId::TI_Left) ? EConveyorDirection::CD_Left : EConveyorDirection::CD_Right;
+
 }
 
 const FVector ABGConveyorBase::GetLeftSideEndPosition()
