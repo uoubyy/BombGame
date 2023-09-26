@@ -23,19 +23,6 @@ ABGGameMode::ABGGameMode()
 void ABGGameMode::StartPlay()
 {
 	Super::StartPlay();
-
-	{
-		TArray<AActor*> OutActors;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABGBombSpawnManager::StaticClass(), OutActors);
-
-		ensureMsgf(OutActors.Num() == 1, TEXT("Failed to find a Bomb Spawn Manager in the Level"));
-
-		if (OutActors.Num() == 1)
-		{
-			BombSpawnManager = Cast<ABGBombSpawnManager>(OutActors[0]);
-		}
-	}
-
 	
 	{
 		TArray<AActor*> OutActors;
@@ -88,6 +75,23 @@ void ABGGameMode::RegisterConveyor(int32 ConveyorId, class ABGConveyorBase* Conv
 void ABGGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	{
+		TArray<AActor*> OutActors;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABGBombSpawnManager::StaticClass(), OutActors);
+
+		ensureMsgf(OutActors.Num() == 1, TEXT("Failed to find a Bomb Spawn Manager in the Level"));
+
+		if (OutActors.Num() == 1)
+		{
+			BombSpawnManager = Cast<ABGBombSpawnManager>(OutActors[0]);
+		}
+	}
+
+	for (auto& ConveyorInfo : AllConveyors)
+	{
+		BombSpawnManager->RequestSpawnNewBomb(ConveyorInfo.Key);
+	}
 }
 
 ABGConveyorBase* ABGGameMode::GetConveyorrefById(int32 ConveyorId)
