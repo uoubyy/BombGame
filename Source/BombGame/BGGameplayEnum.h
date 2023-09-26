@@ -10,3 +10,12 @@ enum class EBombType : uint8
 	BT_Timer	UMETA(DisplayName = "Timer Bomb"),
 	Count		UMETA(Hidden)
 };
+
+UENUM(BlueprintType)
+enum class EConveyorDirection : uint8
+{
+	BT_None		UMETA(DisplayName = "None"),
+	CD_Left		UMETA(DisplayName = "Left"),
+	CD_Right	UMETA(DisplayName = "Right"),
+	Count		UMETA(Hidden)
+};

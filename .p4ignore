@@ -1,0 +1,11 @@
+# User-specific folders or temporary files that should not be versioned.
+    Saved/
+    Intermediate/
+    DerivedDataCache/
+    FileOpenOrder/
+    obj/
+# Certain file types that should not be versioned.
+    *.pdb
+    *-Debug.*
+# Visual Studio user settings files that should be ignored.
+    .vs/
