@@ -2,7 +2,7 @@
 
 #include "BGGameMode.h"
 #include "UObject/ConstructorHelpers.h"
-
+#include "TimerManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "BGBombSpawnManager.h"
 #include "BGPlayerState.h"
@@ -135,6 +135,19 @@ void ABGGameMode::UpdateReadyPlayers()
 	{
 		return;
 	}
+
+	if (ReadyPlayers == PlayerNums)
+	{
+		GameState = EGameState::GS_Ready;
+		AllPlayersReadyDelegate.Broadcast();
+		GetWorldTimerManager().SetTimer(ReadyCountdownTimerHandle, ReadyCountDown, ReadyCountDownTime, false);
+	}
+}
+
+void ABGGameMode::ReadyCountDown()
+{
+	GameState = EGameState::GS_Start;
+	GameStartDelegate.Broadcast();
 }
 
 EGameState ABGGameMode::GetGameState()
@@ -144,13 +157,7 @@ EGameState ABGGameMode::GetGameState()
 
 bool ABGGameMode::AllPlayersReady()
 {
-	if (ReadyPlayers == PlayerNums)
-	{
-		AllPlayersReadyDelegate.Broadcast();
-		return true;
-	}
-	
-	return false;
+	return ReadyPlayers == PlayerNums ? true : false;
 }
 
 void ABGGameMode::Tick(float DeltaTime)
