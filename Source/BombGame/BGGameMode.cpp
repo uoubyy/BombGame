@@ -144,7 +144,13 @@ EGameState ABGGameMode::GetGameState()
 
 bool ABGGameMode::AllPlayersReady()
 {
-	return ReadyPlayers == PlayerNums ? true : false;
+	if (ReadyPlayers == PlayerNums)
+	{
+		AllPlayersReadyDelegate.Broadcast();
+		return true;
+	}
+	
+	return false;
 }
 
 void ABGGameMode::Tick(float DeltaTime)

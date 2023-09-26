@@ -59,8 +59,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
 	int PlayerNums;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
-	FReadyPlayerDelegate ReadyPlayerDelegate;
+	UPROPERTY(BlueprintAssignable)
+	FReadyPlayerDelegate AllPlayersReadyDelegate;
 
 
 protected:
