@@ -12,15 +12,43 @@ class BOMBGAME_API ABGConveyorBase : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
+
 	ABGConveyorBase();
 
 protected:
-	// Called when the game starts or when spawned
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class USceneComponent* SceneRoot;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class UStaticMeshComponent* MeshComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class USceneComponent* LeftSideEndPoint;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class USceneComponent* RightSideEndPoint;
+
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
+
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
+	const FVector GetConveyorRightDirection() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
+	const int32 GetConveyorId() const { return ConveyorId; }
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
+	const FVector GetLeftSideEndPosition();
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
+	const FVector GetRightSideEndPosition();
+
+protected:
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Conveyor")
+	int32 ConveyorId;
 };

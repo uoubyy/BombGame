@@ -3,25 +3,48 @@
 
 #include "BGConveyorBase.h"
 
-// Sets default values
 ABGConveyorBase::ABGConveyorBase()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	SceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("SceneRoot"));
+	SetRootComponent(SceneRoot);
+	SceneRoot->SetMobility(EComponentMobility::Static);
+
+	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	MeshComponent->SetupAttachment(SceneRoot);
+
+	LeftSideEndPoint = CreateDefaultSubobject<USceneComponent>(TEXT("LeftSideEndPoint"));
+	LeftSideEndPoint->SetupAttachment(SceneRoot);
+
+	RightSideEndPoint = CreateDefaultSubobject<USceneComponent>(TEXT("RightSideEndPoint"));
+	RightSideEndPoint->SetupAttachment(SceneRoot);
 }
 
-// Called when the game starts or when spawned
 void ABGConveyorBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-// Called every frame
 void ABGConveyorBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+const FVector ABGConveyorBase::GetRightSideEndPosition()
+{
+	return RightSideEndPoint->GetComponentLocation();
+}
+
+const FVector ABGConveyorBase::GetLeftSideEndPosition()
+{
+	return LeftSideEndPoint->GetComponentLocation();
+}
+
+const FVector ABGConveyorBase::GetConveyorRightDirection() const
+{
+	return GetActorRightVector();
 }
 

@@ -12,6 +12,16 @@ enum class EBombType : uint8
 };
 
 UENUM(BlueprintType)
+enum class EBombStatus : uint8
+{
+	BS_None		UMETA(DisplayName = "None"),
+	BS_Idle		UMETA(DisplayName = "Idle"),
+	BS_Moving	UMETA(DisplayName = "Moving"),
+	BS_Exploded	UMETA(DisplayName = "Exploded"),
+	Count		UMETA(Hidden)
+};
+
+UENUM(BlueprintType)
 enum class EConveyorDirection : uint8
 {
 	BT_None		UMETA(DisplayName = "None"),
