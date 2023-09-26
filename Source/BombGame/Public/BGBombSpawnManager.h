@@ -17,6 +17,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	virtual void PostInitializeComponents() override;
+
 public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
