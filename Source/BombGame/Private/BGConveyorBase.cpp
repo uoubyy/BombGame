@@ -52,7 +52,7 @@ void ABGConveyorBase::Tick(float DeltaTime)
 
 void ABGConveyorBase::OnConveyorTapped(class ABGCharacter* SourcePlayer)
 {
-	LastPressedTeam = SourcePlayer->GetPlayerState<ABGPlayerState>().GetPlayerTeamId();
+	LastPressedTeam = SourcePlayer->GetPlayerState<ABGPlayerState>()->GetPlayerTeamId();
 }
 
 const FVector ABGConveyorBase::GetNewBombSpawnPosition_Implementation()
@@ -71,6 +71,7 @@ void ABGConveyorBase::UpdateDirectionBasedOnTeam()
 	ABGGameMode* BGGameMode = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode());
 
 	CurrentMovingDirection = (LastPressedTeam == ETeamId::TI_Left) ? EConveyorDirection::CD_Left : EConveyorDirection::CD_Right;
+
 
 }
 

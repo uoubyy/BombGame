@@ -58,9 +58,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
 	const EConveyorDirection GetCurrentMovingDirection() const { return CurrentMovingDirection; }
 
-	//UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
-	//const ETeam GetLastPressedTeam() const { return LastPressedTeam ; }
-
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
 	void OnConveyorTapped(class ABGCharacter* SourcePlayer);
 
