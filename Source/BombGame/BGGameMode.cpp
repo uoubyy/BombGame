@@ -17,7 +17,7 @@ ABGGameMode::ABGGameMode()
 	CountdownTime = 10000;
 	GameState = EGameState::GS_Idle;
 	ReadyPlayers = 0;
- 	ReadyPlayerDelegate.AddDynamic(this, &ABGGameMode::UpdateReadyPlayers);
+	AllPlayersReadyDelegate.AddDynamic(this, &ABGGameMode::UpdateReadyPlayers);
 }
 
 void ABGGameMode::StartPlay()
@@ -144,7 +144,13 @@ EGameState ABGGameMode::GetGameState()
 
 bool ABGGameMode::AllPlayersReady()
 {
-	return ReadyPlayers == PlayerNums ? true : false;
+	if (ReadyPlayers == PlayerNums)
+	{
+		AllPlayersReadyDelegate.Broadcast();
+		return true;
+	}
+	
+	return false;
 }
 
 void ABGGameMode::Tick(float DeltaTime)
