@@ -25,23 +25,31 @@ ABGConveyorBase::ABGConveyorBase()
 void ABGConveyorBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	ABGGameMode* BGGameMode = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode());
 
-	if(BGGameMode)
-	{ 
-		BGGameMode->RegisterConveyor(ConveyorId, this);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to register Conveyor %d, Game mode not detected."), ConveyorId);
-	}
+	CurrentMovingDirection = InitMovingDirection;
+	K2_OnMovingDirectionChanged();
 }
 
 void ABGConveyorBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ABGConveyorBase::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	ABGGameMode* BGGameMode = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode());
+
+	if (BGGameMode)
+	{
+		BGGameMode->RegisterConveyor(ConveyorId, this);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to register Conveyor %d, Game mode not detected."), ConveyorId);
+	}
 }
 
 const FVector ABGConveyorBase::GetNewBombSpawnPosition_Implementation()
