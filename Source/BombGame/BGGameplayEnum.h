@@ -29,3 +29,21 @@ enum class EConveyorDirection : uint8
 	CD_Right	UMETA(DisplayName = "Right"),
 	Count		UMETA(Hidden)
 };
+
+UENUM(BlueprintType)
+enum class EGameState : uint8
+{
+	GS_Idle		UMETA(DisplayName = "Idle"),
+	GS_Start	UMETA(DisplayName = "Start"),
+	GS_End	    UMETA(DisplayName = "End"),
+	Count		UMETA(Hidden)
+};
+
+UENUM(BlueprintType)
+enum class ETeamId : uint8
+{
+	TI_None		UMETA(DisplayName = "None"),
+	TI_Left		UMETA(DisplayName = "Left Team"),
+	TI_Right	UMETA(DisplayName = "Right Team"),
+	Count		UMETA(Hidden)
+};

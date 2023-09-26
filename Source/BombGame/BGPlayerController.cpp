@@ -116,7 +116,7 @@ void ABGPlayerController::OnTouchReleased()
 	OnSetDestinationReleased();
 }
 
-void ABGPlayerController::ToggleReadyStatus()
+void ABGPlayerController::ToggleReadyStatus(bool ReadyOrNot)
 {
 	// ABGGameMode* BGGameMode = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode());
 }
