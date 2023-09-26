@@ -60,6 +60,7 @@ void ABGConveyorBase::PostInitializeComponents()
 void ABGConveyorBase::OnConveyorTapped(class ABGCharacter* SourcePlayer)
 {
 	LastPressedTeam = SourcePlayer->GetPlayerState<ABGPlayerState>()->GetPlayerTeamId();
+	UpdateDirectionBasedOnTeam();
 }
 
 const FVector ABGConveyorBase::GetNewBombSpawnPosition_Implementation()
@@ -78,6 +79,7 @@ void ABGConveyorBase::UpdateDirectionBasedOnTeam()
 	ABGGameMode* BGGameMode = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode());
 
 	CurrentMovingDirection = (LastPressedTeam == ETeamId::TI_Left) ? EConveyorDirection::CD_Left : EConveyorDirection::CD_Right;
+	K2_OnMovingDirectionChanged();
 
 
 }
