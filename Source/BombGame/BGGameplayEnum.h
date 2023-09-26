@@ -24,7 +24,7 @@ enum class EBombStatus : uint8
 UENUM(BlueprintType)
 enum class EConveyorDirection : uint8
 {
-	BT_None		UMETA(DisplayName = "None"),
+	CD_None		UMETA(DisplayName = "None"),
 	CD_Left		UMETA(DisplayName = "Left"),
 	CD_Right	UMETA(DisplayName = "Right"),
 	Count		UMETA(Hidden)

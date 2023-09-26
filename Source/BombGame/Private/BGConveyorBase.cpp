@@ -2,6 +2,7 @@
 
 
 #include "BGConveyorBase.h"
+#include "../BGGameMode.h"
 
 ABGConveyorBase::ABGConveyorBase()
 {
@@ -25,6 +26,16 @@ void ABGConveyorBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	ABGGameMode* BGGameMode = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode());
+
+	if(BGGameMode)
+	{ 
+		BGGameMode->RegisterConveyor(ConveyorId, this);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to register Conveyor %d, Game mode not detected."), ConveyorId);
+	}
 }
 
 void ABGConveyorBase::Tick(float DeltaTime)
@@ -33,9 +44,9 @@ void ABGConveyorBase::Tick(float DeltaTime)
 
 }
 
-const FVector ABGConveyorBase::GetNewBombSpawnPosition()
+const FVector ABGConveyorBase::GetNewBombSpawnPosition_Implementation()
 {
-	return FVector::Zero();
+	return FVector::Zero(); // TODO: override in Blueprint
 }
 
 const FVector ABGConveyorBase::GetRightSideEndPosition()

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "../BGGameplayEnum.h"
 #include "BGConveyorBase.generated.h"
 
 UCLASS()
@@ -41,7 +42,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
 	const int32 GetConveyorId() const { return ConveyorId; }
 
-	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Bomb Game|Conveyor")
 	const FVector GetNewBombSpawnPosition();
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
@@ -50,8 +51,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
 	const FVector GetRightSideEndPosition();
 
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
+	const EConveyorDirection GetCurrentMovingDirection() const { return CurrentMovingDirection; }
+
 protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Conveyor")
 	int32 ConveyorId;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Conveyor")
+	EConveyorDirection CurrentMovingDirection;
 };

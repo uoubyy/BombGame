@@ -20,7 +20,7 @@ protected:
 public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
-	void RequestSpawnNewBomb(int32 ConveyorId);
+	class ABGBombBase* RequestSpawnNewBomb(int32 ConveyorId);
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Spawn Manager")

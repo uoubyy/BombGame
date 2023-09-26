@@ -5,6 +5,8 @@
 #include "../BGGameMode.h"
 
 #include "Math/UnrealMathUtility.h"
+#include "BGConveyorBase.h"
+#include "BGBombBase.h"
 
 ABGBombSpawnManager::ABGBombSpawnManager()
 {
@@ -20,11 +22,11 @@ void ABGBombSpawnManager::BeginPlay()
 	BGGameModeRef = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode());
 }
 
-void ABGBombSpawnManager::RequestSpawnNewBomb(int32 ConveyorId)
+ABGBombBase* ABGBombSpawnManager::RequestSpawnNewBomb(int32 ConveyorId)
 {
 	if (!BGGameModeRef)
 	{
-		return;
+		return nullptr;
 	}
 
 	int32 BombTypeCnt = AllBombTypeClass.Num();
@@ -32,5 +34,18 @@ void ABGBombSpawnManager::RequestSpawnNewBomb(int32 ConveyorId)
 	int32 NewBombTypeIndex = FMath::RandRange(0, BombTypeCnt - 1);
 
 	ABGConveyorBase* ConveyorRef = BGGameModeRef->GetConveyorrefById(ConveyorId);
+
+	FActorSpawnParameters* SpawnParameters = new FActorSpawnParameters;
+	SpawnParameters->SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	ABGBombBase* NewBomb = Cast<ABGBombBase>(GetWorld()->SpawnActor<AActor>(AllBombTypeClass[NewBombTypeIndex], ConveyorRef->GetNewBombSpawnPosition(), FRotator::ZeroRotator, *SpawnParameters));
+
+	if (NewBomb)
+	{
+		// TODO: Init Speed
+		NewBomb->InitBomb(200.0f, ConveyorRef->GetCurrentMovingDirection(), ConveyorRef);
+	}
+
+	return NewBomb;
 }
 
