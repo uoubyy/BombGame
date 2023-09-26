@@ -88,6 +88,11 @@ void ABGGameMode::RegisterConveyor(int32 ConveyorId, class ABGConveyorBase* Conv
 void ABGGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	for (auto& ConveyorInfo : AllConveyors)
+	{
+		BombSpawnManager->RequestSpawnNewBomb(ConveyorInfo.Key);
+	}
 }
 
 ABGConveyorBase* ABGGameMode::GetConveyorrefById(int32 ConveyorId)
