@@ -56,7 +56,7 @@ protected:
 	void OnTouchReleased();
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|PlayerController")
-	void ToggleReadyStatus();
+	void ToggleReadyStatus(bool ReadyOrNot);
 
 private:
 	FVector CachedDestination;
