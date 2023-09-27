@@ -63,9 +63,18 @@ void ABGBombBase::Tick(float DeltaSeconds)
 	SetActorLocation(NewActorLocation);
 }
 
-void ABGBombBase::InitBomb(float InitSpeed, EConveyorDirection InitMovingDirection, ABGConveyorBase* ParentConveyor)
+void ABGBombBase::BeginDestroy()
+{
+	OnBombExplodedDelegate.Clear();
+
+	Super::BeginDestroy();
+}
+
+void ABGBombBase::InitBomb(int32 BombId, float InitSpeed, EConveyorDirection InitMovingDirection, ABGConveyorBase* ParentConveyor)
 {
 	ensureMsgf(ParentConveyor, TEXT("InitBomb %s with invalid Conveyor."), *GetName());
+
+	BombUniqueId = BombId;
 
 	CurrentMovingSpeed = InitSpeed;
 	CurrentMovingDirection = InitMovingDirection;
@@ -108,9 +117,11 @@ void ABGBombBase::OnBombExploded_Implementation()
 	AttachedConveyor = nullptr;
 	BombStatus = EBombStatus::BS_Exploded;
 
-	OnBombExplodedDelegate.Broadcast(CurrentMovingDirection, AttachedConveyorId);
+	OnBombExplodedDelegate.Broadcast(CurrentMovingDirection, AttachedConveyorId, DamageAmount, BombUniqueId);
 
 	// TODO: Timer type bomb we need test the position to decide damage direction
+
+	Destroy();
 }
 
 void ABGBombBase::RecalculateTargetPosition()
@@ -121,5 +132,5 @@ void ABGBombBase::RecalculateTargetPosition()
 	float Length = FVector::DotProduct(TargetPosition, AttachedConveyor->GetConveyorRightDirection());
 	TargetPosition = GetActorLocation() + Length * AttachedConveyor->GetConveyorRightDirection();
 
-	DrawDebugSphere(GetWorld(), TargetPosition, 100, 20, FColor::Red, true);
+	DrawDebugSphere(GetWorld(), TargetPosition, 100, 20, FColor::Red, false, 10);
 }

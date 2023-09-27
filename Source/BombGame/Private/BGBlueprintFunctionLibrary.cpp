@@ -6,6 +6,8 @@
 #include "../BGPlayerState.h"
 
 #include "Math/Vector.h"
+#include "../BGGameMode.h"
+#include "BGBombSpawnManager.h"
 
 AActor* UBGBlueprintFunctionLibrary::FindClosestPlayerOfTeam(AActor* RequestActor, const ETeamId TargetTeam)
 {
@@ -38,4 +40,17 @@ AActor* UBGBlueprintFunctionLibrary::FindClosestPlayerOfTeam(AActor* RequestActo
 	}
 
 	return ClosestPawn;
+}
+
+TArray<ABGBombBase*> UBGBlueprintFunctionLibrary::GetAllBombsMovingToTeam(AActor* RequestActor, ETeamId TargetTeam)
+{
+	TArray<ABGBombBase*> AllBombs;
+	if (ABGGameMode* BGGameMode = Cast<ABGGameMode>(RequestActor->GetWorld()->GetAuthGameMode()))
+	{
+		if (ABGBombSpawnManager* BombSpawnManager = BGGameMode->GetBombSpawnManager())
+		{
+			return BombSpawnManager->GetAllActiveBombsToTeam(TargetTeam);
+		}
+	}
+	return AllBombs;
 }

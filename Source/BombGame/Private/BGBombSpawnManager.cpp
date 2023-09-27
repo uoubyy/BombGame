@@ -8,6 +8,8 @@
 #include "BGConveyorBase.h"
 #include "BGBombBase.h"
 
+#include "Kismet/GameplayStatics.h"
+
 ABGBombSpawnManager::ABGBombSpawnManager()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -17,27 +19,42 @@ ABGBombSpawnManager::ABGBombSpawnManager()
 void ABGBombSpawnManager::BeginPlay()
 {
 	Super::BeginPlay();
+
+	TArray<AActor*> OutActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABGConveyorBase::StaticClass(), OutActors);
+
+	ensureMsgf(OutActors.Num() > 0, TEXT("Failed to find any Conveyor in the Level"));
+
+	for (auto TargetActor : OutActors)
+	{
+		if (ABGConveyorBase* ConveyorRef = Cast<ABGConveyorBase>(TargetActor))
+		{
+			int32 ConveyorId = ConveyorRef->GetConveyorId();
+			ensureMsgf(!AllConveyors.Contains(ConveyorId), TEXT("Register duplicated conveyors with the same id %d"), ConveyorId);
+
+			AllConveyors.Add({ ConveyorId , ConveyorRef });
+		}
+	}
+
+	SpawnBombForAllConveyors();
+
+	GameModeRef = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode());
 }
 
 void ABGBombSpawnManager::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-
-	BGGameModeRef = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode());
 }
 
 ABGBombBase* ABGBombSpawnManager::RequestSpawnNewBomb(int32 ConveyorId)
 {
-	if (!BGGameModeRef)
-	{
-		return nullptr;
-	}
+	ensureMsgf(AllConveyors.Contains(ConveyorId), TEXT("Request to Spawn New Bomb at the invalid conveyor %d"), ConveyorId);
 
 	int32 BombTypeCnt = AllBombTypeClass.Num();
 
 	int32 NewBombTypeIndex = FMath::RandRange(0, BombTypeCnt - 1);
 
-	ABGConveyorBase* ConveyorRef = BGGameModeRef->GetConveyorrefById(ConveyorId);
+	ABGConveyorBase* ConveyorRef = AllConveyors[ConveyorId];
 
 	FActorSpawnParameters* SpawnParameters = new FActorSpawnParameters;
 	SpawnParameters->SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -46,10 +63,59 @@ ABGBombBase* ABGBombSpawnManager::RequestSpawnNewBomb(int32 ConveyorId)
 
 	if (NewBomb)
 	{
+		static int32 BombUniqueId = 1;
 		// TODO: Init Speed
-		NewBomb->InitBomb(200.0f, ConveyorRef->GetCurrentMovingDirection(), ConveyorRef);
+		NewBomb->InitBomb(BombUniqueId, 200.0f, ConveyorRef->GetCurrentMovingDirection(), ConveyorRef);
+
+		NewBomb->OnBombExplodedDelegate.AddDynamic(this, &ThisClass::OnBombDestroyed);
+
+		AllActiveBombs.Add({ BombUniqueId, NewBomb} );
+
+		++BombUniqueId;
 	}
 
 	return NewBomb;
+}
+
+ABGConveyorBase* ABGBombSpawnManager::GetConveyorrefById(int32 ConveyorId)
+{
+	if (AllConveyors.Contains(ConveyorId))
+	{
+		return AllConveyors[ConveyorId];
+	}
+
+	return nullptr;
+}
+
+TArray<class ABGBombBase*> ABGBombSpawnManager::GetAllActiveBombsToTeam(ETeamId TargetTeam)
+{
+	TArray<class ABGBombBase*> AllBombs;
+
+	EConveyorDirection TargetDirection = (TargetTeam == ETeamId::TI_All) ? EConveyorDirection::CD_All : (TargetTeam == ETeamId::TI_Left ? EConveyorDirection::CD_Left : EConveyorDirection::CD_Right);
+
+	for (auto& BombInfo : AllActiveBombs)
+	{
+		if (BombInfo.Value && (TargetDirection == EConveyorDirection::CD_All || BombInfo.Value->GetMovingDirection() == TargetDirection))
+		{
+			AllBombs.Add(BombInfo.Value);
+		}
+	}
+
+	return AllBombs;
+}
+
+void ABGBombSpawnManager::SpawnBombForAllConveyors()
+{
+	for (int32 ConveyorId = 0; ConveyorId < AllConveyors.Num(); ++ConveyorId)
+	{
+		RequestSpawnNewBomb(ConveyorId);
+	}
+}
+
+void ABGBombSpawnManager::OnBombDestroyed(const EConveyorDirection MovingDirection, const int32 ConveyorId, const int32 DamageAmount, const int32 BombId)
+{
+	RequestSpawnNewBomb(ConveyorId);
+	ensureMsgf(AllActiveBombs.Contains(BombId), TEXT("OnBombDestroyed with Invalid Id %d"), BombId);
+	AllActiveBombs.Remove(BombId);
 }
 

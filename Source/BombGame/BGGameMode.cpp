@@ -16,9 +16,8 @@ ABGGameMode::ABGGameMode()
 	// Initialize variables
 	ElapsedTime = 0.0f;
 	CountdownTime = 10000;
-	GameState = EGameState::GS_Idle;
+
 	ReadyPlayers = 0;
-/*	AllPlayersReadyDelegate.AddDynamic(this, &ABGGameMode::UpdateReadyPlayers);*/
 }
 
 void ABGGameMode::StartPlay()
@@ -48,6 +47,9 @@ void ABGGameMode::StartPlay()
 			}
 		}
 	}
+
+	TeamsHealthPoints.Add({ ETeamId::TI_Left, MaxHealthPoints });
+	TeamsHealthPoints.Add({ ETeamId::TI_Right, MaxHealthPoints });
 }
 
 APlayerController* ABGGameMode::Login(UPlayer* NewPlayer, ENetRole InRemoteRole, const FString& Portal, const FString& Options, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
@@ -58,19 +60,6 @@ APlayerController* ABGGameMode::Login(UPlayer* NewPlayer, ENetRole InRemoteRole,
 AActor* ABGGameMode::ChoosePlayerStart_Implementation(AController* Player)
 {
 	return Super::ChoosePlayerStart_Implementation(Player);
-}
-
-void ABGGameMode::RegisterConveyor(int32 ConveyorId, class ABGConveyorBase* ConveyorRef)
-{
-	bool DuplicatedCheck = AllConveyors.Contains(ConveyorId);
-	ensureMsgf(DuplicatedCheck == false, TEXT("Register duplicated conveyors with the same id %d"), ConveyorId);
-
-	if (DuplicatedCheck)
-	{
-		return;
-	}
-
-	AllConveyors.Add({ ConveyorId , ConveyorRef });
 }
 
 void ABGGameMode::BeginPlay()
@@ -88,21 +77,17 @@ void ABGGameMode::BeginPlay()
 			BombSpawnManager = Cast<ABGBombSpawnManager>(OutActors[0]);
 		}
 	}
+}
 
-	for (auto& ConveyorInfo : AllConveyors)
-	{
-		BombSpawnManager->RequestSpawnNewBomb(ConveyorInfo.Key);
-	}
+void ABGGameMode::SetGameState(const EGameState NewGameState)
+{
+	CurrentGameState = NewGameState;
+	OnGameStateChanged.Broadcast(CurrentGameState);
 }
 
 ABGConveyorBase* ABGGameMode::GetConveyorrefById(int32 ConveyorId)
 {
-	if (AllConveyors.Contains(ConveyorId))
-	{
-		return AllConveyors[ConveyorId];
-	}
-
-	return nullptr;
+	return BombSpawnManager ? BombSpawnManager->GetConveyorrefById(ConveyorId) : nullptr;
 }
 
 // Register the character when it joins at first time
@@ -132,47 +117,55 @@ ABGCharacter* ABGGameMode::GetCharacterRefById(int32 CharacterId)
 
 void ABGGameMode::UpdateReadyPlayers()
 {
-	ReadyPlayers ++;
+	ReadyPlayers++;
 	UE_LOG(LogTemp, Warning, TEXT("Current readyPlayer : %d"), ReadyPlayers);
-// 	bool PlayerNumsCheck = ReadyPlayers > PlayerNums ? true : false;
-// 	ensureMsgf(PlayerNumsCheck == false, TEXT("Ready Player numbers are out of range: %d"), ReadyPlayers);
-// 
-// 	if (PlayerNumsCheck)
-// 	{
-// 		return;
-// 	}
 
 	if (ReadyPlayers == PlayerNums)
 	{
-		GameState = EGameState::GS_Ready;
-		AllPlayersReadyDelegate.Broadcast();
+		SetGameState(EGameState::GS_Ready);
+
 		GetWorldTimerManager().SetTimer(ReadyCountdownTimerHandle, this, &ABGGameMode::ReadyCountDown, 0, false, ReadyCountDownTime);
 	}
 }
 
 void ABGGameMode::ReadyCountDown()
 {
-	GameState = EGameState::GS_Start;
-	GameStartDelegate.Broadcast();
+	SetGameState(EGameState::GS_Start);
 }
 
 EGameState ABGGameMode::GetGameState()
 {
-	return GameState;
+	return CurrentGameState;
 }
 
 bool ABGGameMode::AllPlayersReady()
 {
-	return ReadyPlayers == PlayerNums ? true : false;
+	return ReadyPlayers == PlayerNums;
+}
+
+void ABGGameMode::ApplyDamage(ETeamId TargetTeam, int32 DamageAmount)
+{
+	TeamsHealthPoints[TargetTeam] -= DamageAmount;
+
+	if (TeamsHealthPoints[TargetTeam] <= 0)
+	{
+		SetGameState(EGameState::GS_End);
+		TeamsHealthPoints[TargetTeam] = 0;
+	}
+}
+
+ABGBombSpawnManager* ABGGameMode::GetBombSpawnManager()
+{
+	return BombSpawnManager;
 }
 
 void ABGGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("GameState is : %d"), GameState));
 	ElapsedTime += DeltaTime;
-	if (GameState == EGameState::GS_Start)
+
+	if (CurrentGameState == EGameState::GS_Start)
 	{
 		CountdownTime -= DeltaTime;
 	}

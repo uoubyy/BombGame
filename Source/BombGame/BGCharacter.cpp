@@ -25,17 +25,25 @@ ABGCharacter::ABGCharacter()
 	GetCharacterMovement()->bConstrainToPlane = true;
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
 
-	// Activate ticking in order to update the cursor every frame.
-	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.bStartWithTickEnabled = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ABGCharacter::OnCollision);
 }
 
-void ABGCharacter::Tick(float DeltaSeconds)
+void ABGCharacter::BeginPlay()
 {
-    Super::Tick(DeltaSeconds);
+	Super::BeginPlay();
+
+	if (ActorHasTag("LeftTeam"))
+	{
+		TeamId = ETeamId::TI_Left;
+	}
+	else
+	{
+		TeamId = ETeamId::TI_Right;
+	}
 }
+
 
 void ABGCharacter::OnCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
 {
