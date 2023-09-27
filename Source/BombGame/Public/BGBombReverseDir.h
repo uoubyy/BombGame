@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "BGBombBase.h"
 #include "BGBombSpawnManager.h"
-#include "BGGameplayEnum.h"
 #include "BGBombReverseDir.generated.h"
 
 /**
@@ -32,8 +31,5 @@ public:
 private:
 
 	EBombType BombType;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Bomb")
-	EConveyorDirection CurrentMovingDirection;
 
 };

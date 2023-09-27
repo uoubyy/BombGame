@@ -2,30 +2,21 @@
 
 
 #include "BGBombReverseDir.h"
+#include "BGBlueprintFunctionLibrary.h"
+#include "../BGGameplayEnum.h"
 
-ABGBombBase::ABGBombReverseDir()
+
+ABGBombReverseDir::ABGBombReverseDir()
 {
-	PrimaryActorTick.bCanEverTick = true;
-// 
-// 	SceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("SceneRoot"));
-// 	SetRootComponent(SceneRoot);
-// 	SceneRoot->SetMobility(EComponentMobility::Movable);
-// 
-// 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-// 	MeshComponent->SetupAttachment(SceneRoot);
-// 
-// 	TriggerComponent = CreateDefaultSubobject<USphereComponent>(TEXT("TriggerBox"));
-// 	TriggerComponent->SetupAttachment(SceneRoot);
-// 
-// 	BombStatus = EBombStatus::BS_Idle;
-}
-
-void ABGBombReverseDir::BeginPlay()
-{
-
+	BombType = EBombType::BT_Reverse;
 }
 
 void ABGBombReverseDir::ReverseAllBombsDirection()
 {
-	
+	ETeamId TargetTeam = GetMovingDirection() == EConveyorDirection::CD_Left ? ETeamId::TI_Right : ETeamId::TI_Left;
+	TArray<ABGBombBase*> AllActiveBombs = UBGBlueprintFunctionLibrary::GetAllBombsMovingToTeam(this, TargetTeam);
+	for (auto Bomb : AllActiveBombs)
+	{
+		Bomb->ReverseMovingDirection();
+	}
 }
