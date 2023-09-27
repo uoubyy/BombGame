@@ -18,6 +18,7 @@ ABGGameMode::ABGGameMode()
 	CountdownTime = 10000;
 	GameState = EGameState::GS_Idle;
 	ReadyPlayers = 0;
+/*	AllPlayersReadyDelegate.AddDynamic(this, &ABGGameMode::UpdateReadyPlayers);*/
 }
 
 void ABGGameMode::StartPlay()
@@ -145,19 +146,12 @@ void ABGGameMode::UpdateReadyPlayers()
 	{
 		GameState = EGameState::GS_Ready;
 		AllPlayersReadyDelegate.Broadcast();
-		UE_LOG(LogTemp, Warning, TEXT("start count down"));
-// 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("start count down")));
-
-		FTimerDelegate ReadyCountDownTimerDelegate;
-		ReadyCountDownTimerDelegate.BindUFunction(this, FName("ReadyCountDown"));
-		GetWorldTimerManager().SetTimer(ReadyCountdownTimerHandle, ReadyCountDownTimerDelegate, ReadyCountDownTime, false);
+		GetWorldTimerManager().SetTimer(ReadyCountdownTimerHandle, this, &ABGGameMode::ReadyCountDown, 0, false, ReadyCountDownTime);
 	}
 }
 
 void ABGGameMode::ReadyCountDown()
 {
-	UE_LOG(LogTemp, Warning, TEXT("count down over"));
-// 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("count down over")));
 	GameState = EGameState::GS_Start;
 	GameStartDelegate.Broadcast();
 }
@@ -176,8 +170,7 @@ void ABGGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-//  	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("GameState is : %d"), GameState));
-
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("GameState is : %d"), GameState));
 	ElapsedTime += DeltaTime;
 	if (GameState == EGameState::GS_Start)
 	{

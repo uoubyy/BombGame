@@ -62,7 +62,7 @@ ABGBombBase* ABGBombSpawnManager::RequestSpawnNewBomb(int32 ConveyorId)
 	if (NewBomb)
 	{
 		// TODO: Init Speed
-		NewBomb->InitBomb(50.0f, ConveyorRef->GetCurrentMovingDirection(), ConveyorRef);
+		NewBomb->InitBomb(200.0f, ConveyorRef->GetCurrentMovingDirection(), ConveyorRef);
 	}
 
 	return NewBomb;

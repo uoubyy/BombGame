@@ -105,7 +105,6 @@ void ABGBombBase::OnTriggerBeginOverlap_Implementation(UPrimitiveComponent* Over
 
 void ABGBombBase::OnBombExploded_Implementation()
 {
-	AttachedConveyor->OnConveyorDirectionChanged.RemoveDynamic(this, &ThisClass::OnConveyorDirectionChanged);
 	AttachedConveyor = nullptr;
 	BombStatus = EBombStatus::BS_Exploded;
 
