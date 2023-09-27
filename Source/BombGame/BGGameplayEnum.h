@@ -27,6 +27,7 @@ enum class EConveyorDirection : uint8
 	CD_None		UMETA(DisplayName = "None"),
 	CD_Left		UMETA(DisplayName = "Left"),
 	CD_Right	UMETA(DisplayName = "Right"),
+	CD_All		UMETA(DisplayName = "All Direction"),
 	Count		UMETA(Hidden)
 };
 
@@ -46,5 +47,14 @@ enum class ETeamId : uint8
 	TI_None		UMETA(DisplayName = "None"),
 	TI_Left		UMETA(DisplayName = "Left Team"),
 	TI_Right	UMETA(DisplayName = "Right Team"),
+	TI_All		UMETA(DisplayName = "All Teams"),
 	Count		UMETA(Hidden)
 };
+
+//USTRUCT(BlueprintType)
+//struct FRandomEvent
+//{
+//	ETeamId TargetTeam;
+//	float ActiveTime;
+//
+//};

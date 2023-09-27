@@ -19,4 +19,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Gameplay")
 	static AActor* FindClosestPlayerOfTeam(AActor* RequestActor, const ETeamId TargetTeam);
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Gameplay")
+	static TArray<class ABGBombBase*> GetAllBombsMovingToTeam(AActor* RequestActor, ETeamId TargetTeam);
 };

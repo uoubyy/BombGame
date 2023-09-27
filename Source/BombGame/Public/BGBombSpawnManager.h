@@ -27,13 +27,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
 	class ABGConveyorBase* GetConveyorrefById(int32 ConveyorId);
 
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
+	TArray<class ABGBombBase*> GetAllActiveBombsToTeam(ETeamId TargetTeam);
+
 protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
 	void SpawnBombForAllConveyors();
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
-	void OnBombDestroyed(const EConveyorDirection MovingDirection, const int32 ConveyorId);
+	void OnBombDestroyed(const EConveyorDirection MovingDirection, const int32 ConveyorId, const int32 DamageAmount, const int32 BombId);
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Spawn Manager")
@@ -41,4 +44,10 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Spawn Manager")
 	TMap<int32, class ABGConveyorBase*> AllConveyors;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Spawn Manager")
+	TMap<int32, class ABGBombBase*> AllActiveBombs;
+
+	UPROPERTY()
+	TObjectPtr<class ABGGameMode> GameModeRef;
 };

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "BGGameplayEnum.h"
 #include "BGCharacter.generated.h"
 
 UCLASS(Blueprintable)
@@ -14,6 +15,8 @@ class ABGCharacter : public ACharacter
 public:
 	ABGCharacter();
 
+	// virtual void BeginPlay() override;
+
 	// Called every frame.
 	virtual void Tick(float DeltaSeconds) override;
 
@@ -22,8 +25,8 @@ public:
 
 private:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = BombGame, meta = (AllowPrivateAccess = "true"))
-	int TeamId;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = BombGame, meta = (AllowPrivateAccess = "true"))
+	ETeamId TeamId;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BombGame, meta = (AllowPrivateAccess = "true"))
 	int LaneId;
