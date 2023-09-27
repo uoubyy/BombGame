@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "BGBombBase.h"
+#include "BGBombSpawnManager.h"
+#include "BGGameplayEnum.h"
 #include "BGBombReverseDir.generated.h"
 
 /**
@@ -16,23 +18,20 @@ class BOMBGAME_API ABGBombReverseDir : public ABGBombBase
 
 public:
 
-	ABGBombBase();
+	ABGBombReverseDir();
 
-protected:
-
-	virtual void BeginPlay() override;
+// protected:
+// 
+// 	virtual void BeginPlay() override;
 
 public:
-
-	virtual void Tick(float DeltaSeconds) override;
 
 	UFUNCTION(BlueprintCallable)
 	void ReverseAllBombsDirection();
 
 private:
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Bomb")
-	EBombStatus BombStatus;
+	EBombType BombType;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Bomb")
 	EConveyorDirection CurrentMovingDirection;
