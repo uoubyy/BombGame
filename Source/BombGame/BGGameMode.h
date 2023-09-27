@@ -13,6 +13,7 @@
 #include "BGGameMode.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReadyPlayerDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameStartDelegate);
 
 UCLASS(minimalapi)
 class ABGGameMode : public AGameModeBase
@@ -47,6 +48,9 @@ public:
 	void UpdateReadyPlayers();
 
 	UFUNCTION(BlueprintCallable)
+	void ReadyCountDown();
+
+	UFUNCTION(BlueprintCallable)
 	EGameState GetGameState();
 
 	UFUNCTION(BlueprintCallable)
@@ -56,11 +60,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
 	float CountdownTime;
 
+	// Ready start countdown time
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
+	float ReadyCountDownTime;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
 	int PlayerNums;
 
 	UPROPERTY(BlueprintAssignable)
 	FReadyPlayerDelegate AllPlayersReadyDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FGameStartDelegate GameStartDelegate;
 
 
 protected:
@@ -79,6 +90,7 @@ private:
 	float ElapsedTime;
 	// Timer handle
 	FTimerHandle CountdownTimerHandle;
+	FTimerHandle ReadyCountdownTimerHandle;
 	EGameState GameState;
 
 	int ReadyPlayers;
