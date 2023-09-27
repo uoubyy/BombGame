@@ -63,6 +63,8 @@ ABGBombBase* ABGBombSpawnManager::RequestSpawnNewBomb(int32 ConveyorId)
 	{
 		// TODO: Init Speed
 		NewBomb->InitBomb(200.0f, ConveyorRef->GetCurrentMovingDirection(), ConveyorRef);
+
+		NewBomb->OnBombExplodedDelegate.AddDynamic(this, &ThisClass::OnBombDestroyed);
 	}
 
 	return NewBomb;
@@ -84,5 +86,10 @@ void ABGBombSpawnManager::SpawnBombForAllConveyors()
 	{
 		RequestSpawnNewBomb(ConveyorId);
 	}
+}
+
+void ABGBombSpawnManager::OnBombDestroyed(const EConveyorDirection MovingDirection, const int32 ConveyorId)
+{
+	RequestSpawnNewBomb(ConveyorId);
 }
 

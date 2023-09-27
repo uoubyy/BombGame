@@ -28,6 +28,8 @@ public:
 
 	virtual void Tick(float DeltaSeconds) override;
 
+	virtual void BeginDestroy() override;
+
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
 	virtual void InitBomb(float InitSpeed, EConveyorDirection InitMovingDirection, class ABGConveyorBase* ParentConveyor);
 

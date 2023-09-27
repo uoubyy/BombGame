@@ -32,8 +32,8 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
 	void SpawnBombForAllConveyors();
 
-	//UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
-	//void 
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
+	void OnBombDestroyed(const EConveyorDirection MovingDirection, const int32 ConveyorId);
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Spawn Manager")
