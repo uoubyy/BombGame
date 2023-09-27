@@ -37,6 +37,8 @@ void ABGBombSpawnManager::BeginPlay()
 	}
 
 	SpawnBombForAllConveyors();
+
+	GameModeRef = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode());
 }
 
 void ABGBombSpawnManager::PostInitializeComponents()
@@ -61,10 +63,15 @@ ABGBombBase* ABGBombSpawnManager::RequestSpawnNewBomb(int32 ConveyorId)
 
 	if (NewBomb)
 	{
+		static int32 BombUniqueId = 1;
 		// TODO: Init Speed
-		NewBomb->InitBomb(200.0f, ConveyorRef->GetCurrentMovingDirection(), ConveyorRef);
+		NewBomb->InitBomb(BombUniqueId, 200.0f, ConveyorRef->GetCurrentMovingDirection(), ConveyorRef);
 
 		NewBomb->OnBombExplodedDelegate.AddDynamic(this, &ThisClass::OnBombDestroyed);
+
+		AllActiveBombs.Add({ BombUniqueId, NewBomb} );
+
+		++BombUniqueId;
 	}
 
 	return NewBomb;
@@ -80,6 +87,23 @@ ABGConveyorBase* ABGBombSpawnManager::GetConveyorrefById(int32 ConveyorId)
 	return nullptr;
 }
 
+TArray<class ABGBombBase*> ABGBombSpawnManager::GetAllActiveBombsToTeam(ETeamId TargetTeam)
+{
+	TArray<class ABGBombBase*> AllBombs;
+
+	EConveyorDirection TargetDirection = (TargetTeam == ETeamId::TI_All) ? EConveyorDirection::CD_All : (TargetTeam == ETeamId::TI_Left ? EConveyorDirection::CD_Left : EConveyorDirection::CD_Right);
+
+	for (auto& BombInfo : AllActiveBombs)
+	{
+		if (BombInfo.Value && (TargetDirection == EConveyorDirection::CD_All || BombInfo.Value->GetMovingDirection() == TargetDirection))
+		{
+			AllBombs.Add(BombInfo.Value);
+		}
+	}
+
+	return AllBombs;
+}
+
 void ABGBombSpawnManager::SpawnBombForAllConveyors()
 {
 	for (int32 ConveyorId = 0; ConveyorId < AllConveyors.Num(); ++ConveyorId)
@@ -88,8 +112,10 @@ void ABGBombSpawnManager::SpawnBombForAllConveyors()
 	}
 }
 
-void ABGBombSpawnManager::OnBombDestroyed(const EConveyorDirection MovingDirection, const int32 ConveyorId)
+void ABGBombSpawnManager::OnBombDestroyed(const EConveyorDirection MovingDirection, const int32 ConveyorId, const int32 DamageAmount, const int32 BombId)
 {
 	RequestSpawnNewBomb(ConveyorId);
+	ensureMsgf(AllActiveBombs.Contains(BombId), TEXT("OnBombDestroyed with Invalid Id %d"), BombId);
+	AllActiveBombs.Remove(BombId);
 }
 

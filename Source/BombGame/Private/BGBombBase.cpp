@@ -70,9 +70,11 @@ void ABGBombBase::BeginDestroy()
 	Super::BeginDestroy();
 }
 
-void ABGBombBase::InitBomb(float InitSpeed, EConveyorDirection InitMovingDirection, ABGConveyorBase* ParentConveyor)
+void ABGBombBase::InitBomb(int32 BombId, float InitSpeed, EConveyorDirection InitMovingDirection, ABGConveyorBase* ParentConveyor)
 {
 	ensureMsgf(ParentConveyor, TEXT("InitBomb %s with invalid Conveyor."), *GetName());
+
+	BombUniqueId = BombId;
 
 	CurrentMovingSpeed = InitSpeed;
 	CurrentMovingDirection = InitMovingDirection;
@@ -115,7 +117,7 @@ void ABGBombBase::OnBombExploded_Implementation()
 	AttachedConveyor = nullptr;
 	BombStatus = EBombStatus::BS_Exploded;
 
-	OnBombExplodedDelegate.Broadcast(CurrentMovingDirection, AttachedConveyorId);
+	OnBombExplodedDelegate.Broadcast(CurrentMovingDirection, AttachedConveyorId, DamageAmount, BombUniqueId);
 
 	// TODO: Timer type bomb we need test the position to decide damage direction
 

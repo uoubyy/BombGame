@@ -7,7 +7,7 @@
 #include "../BGGameplayEnum.h"
 #include "BGBombBase.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnBombExplodedDelegate, const EConveyorDirection, Direction, const int32, ConveyorId);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnBombExplodedDelegate, const EConveyorDirection, Direction, const int32, ConveyorId, const int32, Damage, const int32, BombId);
 
 UCLASS()
 class BOMBGAME_API ABGBombBase : public AActor
@@ -31,7 +31,7 @@ public:
 	virtual void BeginDestroy() override;
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
-	virtual void InitBomb(float InitSpeed, EConveyorDirection InitMovingDirection, class ABGConveyorBase* ParentConveyor);
+	virtual void InitBomb(int32 BombId, float InitSpeed, EConveyorDirection InitMovingDirection, class ABGConveyorBase* ParentConveyor);
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
 	void ReverseMovingDirection();
@@ -39,8 +39,11 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnBombExplodedDelegate OnBombExplodedDelegate;
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
 	void OnConveyorDirectionChanged(EConveyorDirection NewDirection);
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
+	const EConveyorDirection GetMovingDirection() const { return CurrentMovingDirection; }
 
 protected:
 
@@ -72,6 +75,12 @@ protected:
 	void OnBombExploded();
 
 private:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Bomb")
+	int32 BombUniqueId;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Bomb")
+	int32 DamageAmount;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Bomb")
 	EBombStatus BombStatus;
