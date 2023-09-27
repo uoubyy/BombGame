@@ -18,7 +18,8 @@ ABGGameMode::ABGGameMode()
 	CountdownTime = 10000;
 	GameState = EGameState::GS_Idle;
 	ReadyPlayers = 0;
-/*	AllPlayersReadyDelegate.AddDynamic(this, &ABGGameMode::UpdateReadyPlayers);*/
+/*	
+.AddDynamic(this, &ABGGameMode::UpdateReadyPlayers);*/
 }
 
 void ABGGameMode::StartPlay()
