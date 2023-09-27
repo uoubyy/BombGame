@@ -31,6 +31,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UBoxComponent* RightSideEndPoint;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class USphereComponent* LeftTriggerComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class USphereComponent* RightTriggerComponent;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bomb Game|Conveyor")
 	ETeamId LastPressedTeam;
 
