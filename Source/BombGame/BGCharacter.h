@@ -15,10 +15,7 @@ class ABGCharacter : public ACharacter
 public:
 	ABGCharacter();
 
-	// virtual void BeginPlay() override;
-
-	// Called every frame.
-	virtual void Tick(float DeltaSeconds) override;
+	virtual void BeginPlay() override;
 
 	UFUNCTION()
 	void OnCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit);
@@ -27,8 +24,5 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = BombGame, meta = (AllowPrivateAccess = "true"))
 	ETeamId TeamId;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BombGame, meta = (AllowPrivateAccess = "true"))
-	int LaneId;
 };
 
