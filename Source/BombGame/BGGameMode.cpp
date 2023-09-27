@@ -159,6 +159,11 @@ ABGBombSpawnManager* ABGGameMode::GetBombSpawnManager()
 	return BombSpawnManager;
 }
 
+int32 ABGGameMode::GetTeamScore(ETeamId TargetTeam)
+{
+	return TeamsHealthPoints[TargetTeam];
+}
+
 void ABGGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

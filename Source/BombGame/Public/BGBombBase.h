@@ -45,6 +45,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
 	const EConveyorDirection GetMovingDirection() const { return CurrentMovingDirection; }
 
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
+	float GetMovingSpeed() const { return CurrentMovingSpeed; }
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
+	void SetMovingSpeed(float NewSpeed) { CurrentMovingSpeed = NewSpeed; }
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")

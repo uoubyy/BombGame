@@ -51,11 +51,3 @@ enum class ETeamId : uint8
 	TI_All		UMETA(DisplayName = "All Teams"),
 	Count		UMETA(Hidden)
 };
-
-//USTRUCT(BlueprintType)
-//struct FRandomEvent
-//{
-//	ETeamId TargetTeam;
-//	float ActiveTime;
-//
-//};
