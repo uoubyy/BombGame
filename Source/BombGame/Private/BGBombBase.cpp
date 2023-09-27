@@ -76,6 +76,8 @@ void ABGBombBase::InitBomb(float InitSpeed, EConveyorDirection InitMovingDirecti
 	BombStatus = EBombStatus::BS_Moving;
 
 	RecalculateTargetPosition();
+
+	AttachedConveyor->OnConveyorDirectionChanged.AddDynamic(this, &ThisClass::OnConveyorDirectionChanged);
 }
 
 void ABGBombBase::ReverseMovingDirection()
@@ -86,6 +88,12 @@ void ABGBombBase::ReverseMovingDirection()
 	RecalculateTargetPosition();
 
 	// TODO: rotation animation
+}
+
+void ABGBombBase::OnConveyorDirectionChanged(EConveyorDirection NewDirection)
+{
+	CurrentMovingDirection = NewDirection;
+	RecalculateTargetPosition();
 }
 
 void ABGBombBase::OnTriggerBeginOverlap_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
