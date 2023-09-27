@@ -22,7 +22,12 @@ public:
 
 private:
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = BombGame, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = BombGame, meta = (AllowPrivateAccess = "true"))
 	ETeamId TeamId;
+
+protected:
+	
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = BombGame, meta = (AllowPrivateAccess = "true"))
+	int32 PlayerId;
 };
 

@@ -65,7 +65,8 @@ ABGBombBase* ABGBombSpawnManager::RequestSpawnNewBomb(int32 ConveyorId)
 	{
 		static int32 BombUniqueId = 1;
 		// TODO: Init Speed
-		NewBomb->InitBomb(BombUniqueId, 200.0f, ConveyorRef->GetCurrentMovingDirection(), ConveyorRef);
+		float InitSpeed = FMath::RandRange(MinInitSpeed, MaxInitSpeed);
+		NewBomb->InitBomb(BombUniqueId, InitSpeed, ConveyorRef->GetCurrentMovingDirection(), ConveyorRef);
 
 		NewBomb->OnBombExplodedDelegate.AddDynamic(this, &ThisClass::OnBombDestroyed);
 
