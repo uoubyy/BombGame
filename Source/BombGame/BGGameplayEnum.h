@@ -8,6 +8,7 @@ enum class EBombType : uint8
 	BT_None		UMETA(DisplayName = "None"),
 	BT_Regular	UMETA(DisplayName = "Regular Bomb"),
 	BT_Timer	UMETA(DisplayName = "Timer Bomb"),
+	BT_Reverse	UMETA(DisplayName = "Reverse Bomb"),
 	Count		UMETA(Hidden)
 };
 
@@ -50,11 +51,3 @@ enum class ETeamId : uint8
 	TI_All		UMETA(DisplayName = "All Teams"),
 	Count		UMETA(Hidden)
 };
-
-//USTRUCT(BlueprintType)
-//struct FRandomEvent
-//{
-//	ETeamId TargetTeam;
-//	float ActiveTime;
-//
-//};
