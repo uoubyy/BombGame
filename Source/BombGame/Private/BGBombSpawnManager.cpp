@@ -17,7 +17,11 @@ ABGBombSpawnManager::ABGBombSpawnManager()
 void ABGBombSpawnManager::BeginPlay()
 {
 	Super::BeginPlay();
-	
+}
+
+void ABGBombSpawnManager::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
 
 	BGGameModeRef = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode());
 }

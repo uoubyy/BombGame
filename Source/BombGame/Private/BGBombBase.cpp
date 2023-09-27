@@ -74,6 +74,8 @@ void ABGBombBase::InitBomb(float InitSpeed, EConveyorDirection InitMovingDirecti
 	AttachedConveyorId = AttachedConveyor->GetConveyorId();
 
 	BombStatus = EBombStatus::BS_Moving;
+
+	RecalculateTargetPosition();
 }
 
 void ABGBombBase::ReverseMovingDirection()
