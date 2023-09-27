@@ -82,13 +82,12 @@ const FVector ABGConveyorBase::GetRightSideEndPosition()
 
 void ABGConveyorBase::UpdateDirectionBasedOnTeam()
 {
-
 	ABGGameMode* BGGameMode = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode());
 
 	CurrentMovingDirection = (LastPressedTeam == ETeamId::TI_Left) ? EConveyorDirection::CD_Left : EConveyorDirection::CD_Right;
 	K2_OnMovingDirectionChanged();
 
-
+	OnConveyorDirectionChanged.Broadcast(CurrentMovingDirection);
 }
 
 const FVector ABGConveyorBase::GetLeftSideEndPosition()

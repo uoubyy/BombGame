@@ -37,6 +37,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnBombExplodedDelegate OnBombExplodedDelegate;
 
+	UFUNCTION(BlueprintCallable)
+	void OnConveyorDirectionChanged(EConveyorDirection NewDirection);
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
