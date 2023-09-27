@@ -18,7 +18,6 @@ ABGGameMode::ABGGameMode()
 	CountdownTime = 10000;
 	GameState = EGameState::GS_Idle;
 	ReadyPlayers = 0;
-/*	AllPlayersReadyDelegate.AddDynamic(this, &ABGGameMode::UpdateReadyPlayers);*/
 }
 
 void ABGGameMode::StartPlay()
@@ -60,19 +59,6 @@ AActor* ABGGameMode::ChoosePlayerStart_Implementation(AController* Player)
 	return Super::ChoosePlayerStart_Implementation(Player);
 }
 
-void ABGGameMode::RegisterConveyor(int32 ConveyorId, class ABGConveyorBase* ConveyorRef)
-{
-	bool DuplicatedCheck = AllConveyors.Contains(ConveyorId);
-	ensureMsgf(DuplicatedCheck == false, TEXT("Register duplicated conveyors with the same id %d"), ConveyorId);
-
-	if (DuplicatedCheck)
-	{
-		return;
-	}
-
-	AllConveyors.Add({ ConveyorId , ConveyorRef });
-}
-
 void ABGGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -88,21 +74,11 @@ void ABGGameMode::BeginPlay()
 			BombSpawnManager = Cast<ABGBombSpawnManager>(OutActors[0]);
 		}
 	}
-
-	for (auto& ConveyorInfo : AllConveyors)
-	{
-		BombSpawnManager->RequestSpawnNewBomb(ConveyorInfo.Key);
-	}
 }
 
 ABGConveyorBase* ABGGameMode::GetConveyorrefById(int32 ConveyorId)
 {
-	if (AllConveyors.Contains(ConveyorId))
-	{
-		return AllConveyors[ConveyorId];
-	}
-
-	return nullptr;
+	return BombSpawnManager ? BombSpawnManager->GetConveyorrefById(ConveyorId) : nullptr;
 }
 
 // Register the character when it joins at first time

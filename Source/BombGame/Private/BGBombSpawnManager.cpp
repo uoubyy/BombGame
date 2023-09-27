@@ -35,24 +35,24 @@ void ABGBombSpawnManager::BeginPlay()
 			AllConveyors.Add({ ConveyorId , ConveyorRef });
 		}
 	}
+
+	SpawnBombForAllConveyors();
 }
 
 void ABGBombSpawnManager::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-
-	BGGameModeRef = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode());
 }
 
 ABGBombBase* ABGBombSpawnManager::RequestSpawnNewBomb(int32 ConveyorId)
 {
-	ensureMsgf(AllConveyors.Contains(ConveyorId), TEXT("Register duplicated conveyors with the same id %d"), ConveyorId)
+	ensureMsgf(AllConveyors.Contains(ConveyorId), TEXT("Request to Spawn New Bomb at the invalid conveyor %d"), ConveyorId);
 
 	int32 BombTypeCnt = AllBombTypeClass.Num();
 
 	int32 NewBombTypeIndex = FMath::RandRange(0, BombTypeCnt - 1);
 
-	ABGConveyorBase* ConveyorRef = BGGameModeRef->GetConveyorrefById(ConveyorId);
+	ABGConveyorBase* ConveyorRef = AllConveyors[ConveyorId];
 
 	FActorSpawnParameters* SpawnParameters = new FActorSpawnParameters;
 	SpawnParameters->SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -66,5 +66,23 @@ ABGBombBase* ABGBombSpawnManager::RequestSpawnNewBomb(int32 ConveyorId)
 	}
 
 	return NewBomb;
+}
+
+ABGConveyorBase* ABGBombSpawnManager::GetConveyorrefById(int32 ConveyorId)
+{
+	if (AllConveyors.Contains(ConveyorId))
+	{
+		return AllConveyors[ConveyorId];
+	}
+
+	return nullptr;
+}
+
+void ABGBombSpawnManager::SpawnBombForAllConveyors()
+{
+	for (int32 ConveyorId = 0; ConveyorId < AllConveyors.Num(); ++ConveyorId)
+	{
+		RequestSpawnNewBomb(ConveyorId);
+	}
 }
 

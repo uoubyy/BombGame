@@ -33,9 +33,6 @@ public:
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
-	void RegisterConveyor(int32 ConveyorId, class ABGConveyorBase* ConveyorRef);
-
-	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
 	class ABGConveyorBase* GetConveyorrefById(int32 ConveyorId);
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
@@ -80,9 +77,6 @@ protected:
 
 private:
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Game Mode")
-	TMap<int32, class ABGConveyorBase*> AllConveyors;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Game Mode")
 	TMap<int32, class ABGCharacter*> AllCharacters;
 

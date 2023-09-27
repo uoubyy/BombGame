@@ -3,7 +3,7 @@
 
 #include "BGConveyorBase.h"
 #include <Components/SphereComponent.h>
-#include "../BGGameMode.h"
+
 #include "../BGPlayerState.h"
 #include "../BGCharacter.h"
 
@@ -35,11 +35,6 @@ ABGConveyorBase::ABGConveyorBase()
 void ABGConveyorBase::BeginPlay()
 {
 	Super::BeginPlay();
-
-	CurrentMovingDirection = InitMovingDirection;
-	LastPressedTeam = CurrentMovingDirection == EConveyorDirection::CD_Left ? ETeamId::TI_Left : ETeamId::TI_Right;
-
-	K2_OnMovingDirectionChanged();
 }
 
 void ABGConveyorBase::Tick(float DeltaTime)
@@ -52,16 +47,10 @@ void ABGConveyorBase::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	ABGGameMode* BGGameMode = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode());
+	CurrentMovingDirection = InitMovingDirection;
+	LastPressedTeam = CurrentMovingDirection == EConveyorDirection::CD_Left ? ETeamId::TI_Left : ETeamId::TI_Right;
 
-	if (BGGameMode)
-	{
-		BGGameMode->RegisterConveyor(ConveyorId, this);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to register Conveyor %d, Game mode not detected."), ConveyorId);
-	}
+	K2_OnMovingDirectionChanged();
 }
 
 void ABGConveyorBase::OnConveyorTapped(class ABGCharacter* SourcePlayer)
@@ -82,8 +71,6 @@ const FVector ABGConveyorBase::GetRightSideEndPosition()
 
 void ABGConveyorBase::UpdateDirectionBasedOnTeam()
 {
-	ABGGameMode* BGGameMode = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode());
-
 	CurrentMovingDirection = (LastPressedTeam == ETeamId::TI_Left) ? EConveyorDirection::CD_Left : EConveyorDirection::CD_Right;
 	K2_OnMovingDirectionChanged();
 
