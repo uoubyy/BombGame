@@ -48,7 +48,7 @@ void ABGConveyorBase::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	CurrentMovingDirection = InitMovingDirection;
-	LastPressedTeam = CurrentMovingDirection == EConveyorDirection::CD_Left ? ETeamId::TI_Left : ETeamId::TI_Right;
+	LastPressedTeam = CurrentMovingDirection == EConveyorDirection::CD_Left ? ETeamId::TI_Right : ETeamId::TI_Left;
 
 	K2_OnMovingDirectionChanged();
 }
@@ -71,7 +71,7 @@ const FVector ABGConveyorBase::GetRightSideEndPosition()
 
 void ABGConveyorBase::UpdateDirectionBasedOnTeam()
 {
-	CurrentMovingDirection = (LastPressedTeam == ETeamId::TI_Left) ? EConveyorDirection::CD_Left : EConveyorDirection::CD_Right;
+	CurrentMovingDirection = (LastPressedTeam == ETeamId::TI_Left) ? EConveyorDirection::CD_Right : EConveyorDirection::CD_Left;
 	K2_OnMovingDirectionChanged();
 
 	OnConveyorDirectionChanged.Broadcast(CurrentMovingDirection);
