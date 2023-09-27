@@ -2,6 +2,7 @@
 
 
 #include "BGConveyorBase.h"
+#include <Components/SphereComponent.h>
 #include "../BGGameMode.h"
 #include "../BGPlayerState.h"
 #include "../BGCharacter.h"
@@ -22,6 +23,12 @@ ABGConveyorBase::ABGConveyorBase()
 
 	RightSideEndPoint = CreateDefaultSubobject<UBoxComponent>(TEXT("RightSideEndPoint"));
 	RightSideEndPoint->SetupAttachment(SceneRoot);
+
+	LeftTriggerComponent = CreateDefaultSubobject<USphereComponent>(TEXT(" Left TriggerBox"));
+	LeftTriggerComponent->SetupAttachment(SceneRoot);
+
+	RightTriggerComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Right TriggerBox"));
+	RightTriggerComponent->SetupAttachment(SceneRoot);
 	
 }
 
@@ -75,13 +82,12 @@ const FVector ABGConveyorBase::GetRightSideEndPosition()
 
 void ABGConveyorBase::UpdateDirectionBasedOnTeam()
 {
-
 	ABGGameMode* BGGameMode = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode());
 
 	CurrentMovingDirection = (LastPressedTeam == ETeamId::TI_Left) ? EConveyorDirection::CD_Left : EConveyorDirection::CD_Right;
 	K2_OnMovingDirectionChanged();
 
-
+	OnConveyorDirectionChanged.Broadcast(CurrentMovingDirection);
 }
 
 const FVector ABGConveyorBase::GetLeftSideEndPosition()

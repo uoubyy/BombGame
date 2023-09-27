@@ -2,13 +2,14 @@
 
 #include "BGGameMode.h"
 #include "UObject/ConstructorHelpers.h"
-
+#include "TimerManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "BGBombSpawnManager.h"
 #include "BGPlayerState.h"
 
 ABGGameMode::ABGGameMode()
 {
+	PrimaryActorTick.bCanEverTick = true;
 	// use our custom PlayerController class
 	PlayerControllerClass = ABGPlayerController::StaticClass();
 
@@ -17,7 +18,7 @@ ABGGameMode::ABGGameMode()
 	CountdownTime = 10000;
 	GameState = EGameState::GS_Idle;
 	ReadyPlayers = 0;
-	AllPlayersReadyDelegate.AddDynamic(this, &ABGGameMode::UpdateReadyPlayers);
+/*	AllPlayersReadyDelegate.AddDynamic(this, &ABGGameMode::UpdateReadyPlayers);*/
 }
 
 void ABGGameMode::StartPlay()
@@ -132,13 +133,27 @@ ABGCharacter* ABGGameMode::GetCharacterRefById(int32 CharacterId)
 void ABGGameMode::UpdateReadyPlayers()
 {
 	ReadyPlayers ++;
-	bool PlayerNumsCheck = ReadyPlayers > PlayerNums ? false : true;
-	ensureMsgf(PlayerNumsCheck == false, TEXT("Ready Player numbers are out of range: %d"), ReadyPlayers);
+	UE_LOG(LogTemp, Warning, TEXT("Current readyPlayer : %d"), ReadyPlayers);
+// 	bool PlayerNumsCheck = ReadyPlayers > PlayerNums ? true : false;
+// 	ensureMsgf(PlayerNumsCheck == false, TEXT("Ready Player numbers are out of range: %d"), ReadyPlayers);
+// 
+// 	if (PlayerNumsCheck)
+// 	{
+// 		return;
+// 	}
 
-	if (PlayerNumsCheck)
+	if (ReadyPlayers == PlayerNums)
 	{
-		return;
+		GameState = EGameState::GS_Ready;
+		AllPlayersReadyDelegate.Broadcast();
+		GetWorldTimerManager().SetTimer(ReadyCountdownTimerHandle, this, &ABGGameMode::ReadyCountDown, 0, false, ReadyCountDownTime);
 	}
+}
+
+void ABGGameMode::ReadyCountDown()
+{
+	GameState = EGameState::GS_Start;
+	GameStartDelegate.Broadcast();
 }
 
 EGameState ABGGameMode::GetGameState()
@@ -148,19 +163,14 @@ EGameState ABGGameMode::GetGameState()
 
 bool ABGGameMode::AllPlayersReady()
 {
-	if (ReadyPlayers == PlayerNums)
-	{
-		AllPlayersReadyDelegate.Broadcast();
-		return true;
-	}
-	
-	return false;
+	return ReadyPlayers == PlayerNums ? true : false;
 }
 
 void ABGGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("GameState is : %d"), GameState));
 	ElapsedTime += DeltaTime;
 	if (GameState == EGameState::GS_Start)
 	{

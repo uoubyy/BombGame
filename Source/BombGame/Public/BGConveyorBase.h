@@ -8,6 +8,8 @@
 #include "Components/BoxComponent.h"
 #include "BGConveyorBase.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnConveyorDirectionChangedDelegate, const EConveyorDirection, Direction);
+
 UCLASS()
 class BOMBGAME_API ABGConveyorBase : public AActor
 {
@@ -30,6 +32,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UBoxComponent* RightSideEndPoint;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class USphereComponent* LeftTriggerComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class USphereComponent* RightTriggerComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bomb Game|Conveyor")
 	ETeamId LastPressedTeam;
@@ -65,6 +73,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
 	void OnConveyorTapped(class ABGCharacter* SourcePlayer);
+
+	UPROPERTY(BlueprintAssignable)
+	FOnConveyorDirectionChangedDelegate OnConveyorDirectionChanged;
 
 protected:
 	
