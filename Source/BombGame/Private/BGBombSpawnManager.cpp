@@ -8,6 +8,8 @@
 #include "BGConveyorBase.h"
 #include "BGBombBase.h"
 
+#include "Kismet/GameplayStatics.h"
+
 ABGBombSpawnManager::ABGBombSpawnManager()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -17,6 +19,22 @@ ABGBombSpawnManager::ABGBombSpawnManager()
 void ABGBombSpawnManager::BeginPlay()
 {
 	Super::BeginPlay();
+
+	TArray<AActor*> OutActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABGConveyorBase::StaticClass(), OutActors);
+
+	ensureMsgf(OutActors.Num() > 0, TEXT("Failed to find any Conveyor in the Level"));
+
+	for (auto TargetActor : OutActors)
+	{
+		if (ABGConveyorBase* ConveyorRef = Cast<ABGConveyorBase>(TargetActor))
+		{
+			int32 ConveyorId = ConveyorRef->GetConveyorId();
+			ensureMsgf(!AllConveyors.Contains(ConveyorId), TEXT("Register duplicated conveyors with the same id %d"), ConveyorId);
+
+			AllConveyors.Add({ ConveyorId , ConveyorRef });
+		}
+	}
 }
 
 void ABGBombSpawnManager::PostInitializeComponents()
@@ -28,10 +46,7 @@ void ABGBombSpawnManager::PostInitializeComponents()
 
 ABGBombBase* ABGBombSpawnManager::RequestSpawnNewBomb(int32 ConveyorId)
 {
-	if (!BGGameModeRef)
-	{
-		return nullptr;
-	}
+	ensureMsgf(AllConveyors.Contains(ConveyorId), TEXT("Register duplicated conveyors with the same id %d"), ConveyorId)
 
 	int32 BombTypeCnt = AllBombTypeClass.Num();
 

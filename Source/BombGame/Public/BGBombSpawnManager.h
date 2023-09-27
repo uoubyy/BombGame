@@ -28,6 +28,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Spawn Manager")
 	TArray<TSubclassOf<class ABGBombBase>> AllBombTypeClass;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Spawn Manager")
+	TMap<int32, class ABGConveyorBase*> AllConveyors;
+
 	UPROPERTY()
 	TObjectPtr<class ABGGameMode> BGGameModeRef;
 };
