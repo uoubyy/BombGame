@@ -37,7 +37,7 @@ void ABGConveyorBase::BeginPlay()
 	Super::BeginPlay();
 
 	CurrentMovingDirection = InitMovingDirection;
-	LastPressedTeam = CurrentMovingDirection == EConveyorDirection::CD_Left ? ETeamId::TI_Left : ETeamId::TI_Right;
+	LastPressedTeam = CurrentMovingDirection == EConveyorDirection::CD_Left ? ETeamId::TI_Right : ETeamId::TI_Left;
 
 	K2_OnMovingDirectionChanged();
 }
@@ -84,7 +84,7 @@ void ABGConveyorBase::UpdateDirectionBasedOnTeam()
 {
 	ABGGameMode* BGGameMode = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode());
 
-	CurrentMovingDirection = (LastPressedTeam == ETeamId::TI_Left) ? EConveyorDirection::CD_Left : EConveyorDirection::CD_Right;
+	CurrentMovingDirection = (LastPressedTeam == ETeamId::TI_Left) ? EConveyorDirection::CD_Right : EConveyorDirection::CD_Left;
 	K2_OnMovingDirectionChanged();
 
 	OnConveyorDirectionChanged.Broadcast(CurrentMovingDirection);
