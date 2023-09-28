@@ -61,11 +61,11 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 			switch (RandomEvent.EventType)
 			{
 			case ERandomEventType::RET_ReverseAll:
-				for (auto BombInfo : AllActiveBombs)
+				for (auto ConveyorInfo : AllConveyors)
 				{
-					if (BombInfo.Value)
+					if (ConveyorInfo.Value)
 					{
-						BombInfo.Value->ReverseMovingDirection();
+						ConveyorInfo.Value->ReverseMovingDirection();
 					}
 				}
 			break;
@@ -139,6 +139,23 @@ TArray<class ABGBombBase*> ABGBombSpawnManager::GetAllActiveBombsToTeam(ETeamId 
 	}
 
 	return AllBombs;
+}
+
+TArray<class ABGConveyorBase*> ABGBombSpawnManager::GetAllConveyorsToTeam(ETeamId TargetTeam)
+{
+	TArray<class ABGConveyorBase*> OutConveyors;
+
+	EConveyorDirection TargetDirection = (TargetTeam == ETeamId::TI_All) ? EConveyorDirection::CD_All : (TargetTeam == ETeamId::TI_Left ? EConveyorDirection::CD_Left : EConveyorDirection::CD_Right);
+
+	for (auto& ConveyorInfo : AllConveyors)
+	{
+		if (ConveyorInfo.Value->GetCurrentMovingDirection() == TargetDirection || TargetDirection == EConveyorDirection::CD_All)
+		{
+			OutConveyors.Add(ConveyorInfo.Value);
+		}
+	}
+
+	return OutConveyors;
 }
 
 void ABGBombSpawnManager::SpawnBombForAllConveyors()

@@ -47,16 +47,29 @@ void ABGConveyorBase::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	CurrentMovingDirection = InitMovingDirection;
-	LastPressedTeam = CurrentMovingDirection == EConveyorDirection::CD_Left ? ETeamId::TI_Right : ETeamId::TI_Left;
+	SetCurrentMovingDirection(InitMovingDirection);
+}
+
+void ABGConveyorBase::SetCurrentMovingDirection(EConveyorDirection NewDirection)
+{
+	CurrentMovingDirection = NewDirection;
+	UpdateTeamBasedOnDirection();
 
 	K2_OnMovingDirectionChanged();
+	OnConveyorDirectionChanged.Broadcast(CurrentMovingDirection);
 }
 
 void ABGConveyorBase::OnConveyorTapped(class ABGCharacter* SourcePlayer)
 {
 	LastPressedTeam = SourcePlayer->GetPlayerState<ABGPlayerState>()->GetPlayerTeamId();
 	UpdateDirectionBasedOnTeam();
+}
+
+void ABGConveyorBase::ReverseMovingDirection()
+{
+	EConveyorDirection NewDirection = CurrentMovingDirection == EConveyorDirection::CD_Left ? EConveyorDirection::CD_Right : EConveyorDirection::CD_Left;
+
+	SetCurrentMovingDirection(NewDirection);
 }
 
 const FVector ABGConveyorBase::GetNewBombSpawnPosition_Implementation()
@@ -75,6 +88,11 @@ void ABGConveyorBase::UpdateDirectionBasedOnTeam()
 	K2_OnMovingDirectionChanged();
 
 	OnConveyorDirectionChanged.Broadcast(CurrentMovingDirection);
+}
+
+void ABGConveyorBase::UpdateTeamBasedOnDirection()
+{
+	LastPressedTeam = CurrentMovingDirection == EConveyorDirection::CD_Left ? ETeamId::TI_Right : ETeamId::TI_Left;
 }
 
 const FVector ABGConveyorBase::GetLeftSideEndPosition()
