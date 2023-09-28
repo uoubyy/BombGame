@@ -114,7 +114,6 @@ void ABGBombBase::OnTriggerBeginOverlap_Implementation(UPrimitiveComponent* Over
 
 void ABGBombBase::OnBombExploded()
 {
-	AttachedConveyor = nullptr;
 	BombStatus = EBombStatus::BS_Exploded;
 
 	OnBombExplodedDelegate.Broadcast(CurrentMovingDirection, AttachedConveyorId, DamageAmount, BombUniqueId);
@@ -128,11 +127,17 @@ void ABGBombBase::OnBombExploded()
 
 void ABGBombBase::PostBombExploded_Implementation()
 {
+	AttachedConveyor = nullptr;
 	Destroy();
 }
 
 void ABGBombBase::RecalculateTargetPosition()
 {
+	if (!AttachedConveyor)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("RecalculateTargetPosition but AttachedConveyor is nullptr"));
+		return;
+	}
 	TargetPosition = CurrentMovingDirection == EConveyorDirection::CD_Left ? AttachedConveyor->GetLeftSideEndPosition() : AttachedConveyor->GetRightSideEndPosition();
 	TargetPosition -= GetActorLocation();
 

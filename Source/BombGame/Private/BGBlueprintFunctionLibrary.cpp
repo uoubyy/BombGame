@@ -54,3 +54,16 @@ TArray<ABGBombBase*> UBGBlueprintFunctionLibrary::GetAllBombsMovingToTeam(AActor
 	}
 	return AllBombs;
 }
+
+TArray<class ABGConveyorBase*> UBGBlueprintFunctionLibrary::GetAllConveyosMovingToTeam(AActor* RequestActor, ETeamId TargetTeam)
+{
+	TArray<class ABGConveyorBase*> AllConveyors;
+	if (ABGGameMode* BGGameMode = Cast<ABGGameMode>(RequestActor->GetWorld()->GetAuthGameMode()))
+	{
+		if (ABGBombSpawnManager* BombSpawnManager = BGGameMode->GetBombSpawnManager())
+		{
+			return BombSpawnManager->GetAllConveyorsToTeam(TargetTeam);
+		}
+	}
+	return AllConveyors;
+}
