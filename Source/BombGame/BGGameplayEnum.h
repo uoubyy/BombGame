@@ -10,6 +10,7 @@ enum class EBombType : uint8
 	BT_Timer	UMETA(DisplayName = "Timer Bomb"),
 	BT_Reverse	UMETA(DisplayName = "Reverse Bomb"),
 	BT_SpeedUp	UMETA(DisplayName = "Speed Bomb"),
+	BT_BoostAll	UMETA(DisplayName = "Boost All Bombs"),
 	Count		UMETA(Hidden)
 };
 
@@ -19,6 +20,7 @@ enum class EBombStatus : uint8
 	BS_None		UMETA(DisplayName = "None"),
 	BS_Idle		UMETA(DisplayName = "Idle"),
 	BS_Moving	UMETA(DisplayName = "Moving"),
+	BS_Paused	UMETA(DisplayName = "Paused"),
 	BS_Exploded	UMETA(DisplayName = "Exploded"),
 	Count		UMETA(Hidden)
 };
