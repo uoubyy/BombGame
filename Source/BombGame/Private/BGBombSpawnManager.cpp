@@ -60,7 +60,13 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 			switch (RandomEvent.EventType)
 			{
 			case ERandomEventType::RET_ReverseAll:
-				//for(auto )
+				for (auto BombInfo : AllActiveBombs)
+				{
+					if (BombInfo.Value)
+					{
+
+					}
+				}
 			break;
 			case ERandomEventType::RET_SwitchLane:
 			break;
