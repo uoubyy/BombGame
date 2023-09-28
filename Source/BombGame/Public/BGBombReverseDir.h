@@ -19,14 +19,14 @@ public:
 
 	ABGBombReverseDir();
 
-// protected:
-// 
-// 	virtual void BeginPlay() override;
-
 public:
 
 	UFUNCTION(BlueprintCallable)
 	void ReverseAllBombsDirection();
+
+protected:
+
+	virtual void OnBombExploded_Implementation() override;
 
 private:
 
