@@ -70,6 +70,7 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 				}
 			break;
 			case ERandomEventType::RET_SwitchLane:
+
 			break;
 			}
 
