@@ -92,7 +92,7 @@ private:
 	TMap<ETeamId, int32> TeamsHealthPoints;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Game Mode")
-	int32 MaxHealthPoints = 5;
+	int32 MaxHealthPoints = 8;
 
 	// Elapsed time
 	float ElapsedTime;

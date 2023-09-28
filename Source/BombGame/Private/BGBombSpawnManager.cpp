@@ -117,6 +117,11 @@ void ABGBombSpawnManager::OnBombDestroyed(const EConveyorDirection MovingDirecti
 {
 	RequestSpawnNewBomb(ConveyorId);
 	ensureMsgf(AllActiveBombs.Contains(BombId), TEXT("OnBombDestroyed with Invalid Id %d"), BombId);
+
+	ETeamId TargetTeam = AllActiveBombs[BombId]->GetMovingDirection() == EConveyorDirection::CD_Left ? ETeamId::TI_Left : ETeamId::TI_Right;
+
+	GameModeRef->ApplyDamage(TargetTeam, AllActiveBombs[BombId]->GetDamageAmount());
+
 	AllActiveBombs.Remove(BombId);
 }
 
