@@ -51,6 +51,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
 	void SetMovingSpeed(float NewSpeed) { CurrentMovingSpeed = NewSpeed; }
 
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
+	int32 GetDamageAmount() const { return DamageAmount; }
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
