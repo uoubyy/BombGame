@@ -105,6 +105,18 @@ void ABGBombBase::OnConveyorDirectionChanged(EConveyorDirection NewDirection)
 	RecalculateTargetPosition();
 }
 
+void ABGBombBase::ToggleMovement(bool EnableOrNot)
+{
+	if (EnableOrNot && BombStatus == EBombStatus::BS_Paused)
+	{
+		BombStatus = EBombStatus::BS_Moving;
+	}
+	else if (!EnableOrNot && BombStatus == EBombStatus::BS_Moving)
+	{
+		BombStatus = EBombStatus::BS_Paused;
+	}
+}
+
 void ABGBombBase::OnTriggerBeginOverlap_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("ABGBombBase %s OnTriggerBeginOverlap with %s."), *GetName(), *OtherActor->GetName());
@@ -144,5 +156,5 @@ void ABGBombBase::RecalculateTargetPosition()
 	float Length = FVector::DotProduct(TargetPosition, AttachedConveyor->GetConveyorRightDirection());
 	TargetPosition = GetActorLocation() + Length * AttachedConveyor->GetConveyorRightDirection();
 
-	DrawDebugSphere(GetWorld(), TargetPosition, 100, 20, FColor::Red, false, 10);
+	// DrawDebugSphere(GetWorld(), TargetPosition, 100, 20, FColor::Red, false, 10);
 }
