@@ -35,6 +35,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
 	TArray<class ABGBombBase*> GetAllActiveBombsToTeam(ETeamId TargetTeam);
 
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
+	TArray<class ABGConveyorBase*> GetAllConveyorsToTeam(ETeamId TargetTeam);
+
 	UPROPERTY(BlueprintAssignable, Category = "Bomb Game|Spawn Manager")
 	FOnRandomEventActivatedDelegate OnRandomEventActivated;
 

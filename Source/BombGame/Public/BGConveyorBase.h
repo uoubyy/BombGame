@@ -68,11 +68,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
 	const EConveyorDirection GetCurrentMovingDirection() const { return CurrentMovingDirection; }
 
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
+	void SetCurrentMovingDirection(EConveyorDirection NewDirection);
+
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Bomb Game|Conveyor")
 	void K2_OnMovingDirectionChanged();
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
 	void OnConveyorTapped(class ABGCharacter* SourcePlayer);
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
+	void ReverseMovingDirection();
 
 	UPROPERTY(BlueprintAssignable)
 	FOnConveyorDirectionChangedDelegate OnConveyorDirectionChanged;
@@ -88,8 +94,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Conveyor")
 	EConveyorDirection CurrentMovingDirection;
 
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Conveyor")
-	//ETeam LastPressedTeam;
-
 	void UpdateDirectionBasedOnTeam();
+
+	void UpdateTeamBasedOnDirection();
 };

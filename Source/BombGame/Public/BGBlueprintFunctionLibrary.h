@@ -22,4 +22,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Gameplay")
 	static TArray<class ABGBombBase*> GetAllBombsMovingToTeam(AActor* RequestActor, ETeamId TargetTeam);
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Gameplay")
+	static TArray<class ABGConveyorBase*> GetAllConveyosMovingToTeam(AActor* RequestActor, ETeamId TargetTeam);
 };

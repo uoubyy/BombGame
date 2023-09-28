@@ -4,6 +4,7 @@
 #include "BGBombReverseDir.h"
 #include "BGBlueprintFunctionLibrary.h"
 #include "../BGGameplayEnum.h"
+#include "BGConveyorBase.h"
 
 
 ABGBombReverseDir::ABGBombReverseDir()
@@ -23,11 +24,16 @@ void ABGBombReverseDir::OnBombExploded()
 void ABGBombReverseDir::ReverseAllBombsDirection()
 {
 	ETeamId TargetTeam = GetMovingDirection() == EConveyorDirection::CD_Left ? ETeamId::TI_Right : ETeamId::TI_Left;
-	TArray<ABGBombBase*> AllActiveBombs = UBGBlueprintFunctionLibrary::GetAllBombsMovingToTeam(this, TargetTeam);
-	for (auto Bomb : AllActiveBombs)
+	// if left team get a bomb, making all bombs moving to right team reverse
+	// the source of direction is conveyor so we need reverse conveyor's direction
+	TArray<ABGConveyorBase*> AllConveyors = UBGBlueprintFunctionLibrary::GetAllConveyosMovingToTeam(this, TargetTeam);
 	{
-		UE_LOG(LogTemp, Warning, TEXT("reverse bomb"));
-		Bomb->ReverseMovingDirection();
+		for (auto Conveyor : AllConveyors)
+		{
+			EConveyorDirection NewDirection = Conveyor->GetCurrentMovingDirection() == EConveyorDirection::CD_Left ? EConveyorDirection::CD_Right : EConveyorDirection::CD_Left;
+
+			Conveyor->SetCurrentMovingDirection(NewDirection);
+		}
 	}
 }
 
