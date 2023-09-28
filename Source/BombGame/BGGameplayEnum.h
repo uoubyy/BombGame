@@ -20,6 +20,7 @@ enum class EBombStatus : uint8
 	BS_None		UMETA(DisplayName = "None"),
 	BS_Idle		UMETA(DisplayName = "Idle"),
 	BS_Moving	UMETA(DisplayName = "Moving"),
+	BS_Paused	UMETA(DisplayName = "Paused"),
 	BS_Exploded	UMETA(DisplayName = "Exploded"),
 	Count		UMETA(Hidden)
 };

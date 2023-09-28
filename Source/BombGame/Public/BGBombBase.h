@@ -54,6 +54,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
 	int32 GetDamageAmount() const { return DamageAmount; }
 
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
+	void ToggleMovement(bool EnableOrNot);
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
