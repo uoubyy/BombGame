@@ -12,7 +12,7 @@
 
 ABGBombSpawnManager::ABGBombSpawnManager()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 }
 
@@ -39,6 +39,35 @@ void ABGBombSpawnManager::BeginPlay()
 	SpawnBombForAllConveyors();
 
 	GameModeRef = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode());
+}
+
+void ABGBombSpawnManager::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	ElapsedTime += DeltaSeconds;
+	for (auto& RandomEvent : AllRandomEvents)
+	{
+		if (RandomEvent.HasUsed)
+		{
+			continue;
+		}
+
+		if (RandomEvent.ActiveTime <= ElapsedTime)
+		{
+			RandomEvent.HasUsed = true;
+
+			switch (RandomEvent.EventType)
+			{
+			case ERandomEventType::RET_ReverseAll:
+				//for(auto )
+			break;
+			case ERandomEventType::RET_SwitchLane:
+			break;
+			}
+
+		}
+	}
 }
 
 void ABGBombSpawnManager::PostInitializeComponents()

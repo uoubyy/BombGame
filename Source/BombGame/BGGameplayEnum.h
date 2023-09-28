@@ -52,3 +52,27 @@ enum class ETeamId : uint8
 	TI_All		UMETA(DisplayName = "All Teams"),
 	Count		UMETA(Hidden)
 };
+
+UENUM(BlueprintType)
+enum class ERandomEventType : uint8
+{
+	RET_None		UMETA(DisplayName = "None"),
+	RET_SwitchLane	UMETA(DisplayName = "Switch Lane"),
+	RET_ReverseAll	UMETA(DisplayName = "Reverse All"),
+	Count		UMETA(Hidden)
+};
+
+USTRUCT(BlueprintType)
+struct FRandomEventInfo
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Random Event")
+	ERandomEventType EventType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Random Event")
+	float ActiveTime;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Random Event")
+	bool HasUsed = false;
+};
