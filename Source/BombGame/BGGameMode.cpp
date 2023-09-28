@@ -152,6 +152,8 @@ void ABGGameMode::ApplyDamage(ETeamId TargetTeam, int32 DamageAmount)
 		SetGameState(EGameState::GS_End);
 		TeamsHealthPoints[TargetTeam] = 0;
 	}
+
+	OnTeamScoreChanged.Broadcast(TeamsHealthPoints[ETeamId::TI_Left], TeamsHealthPoints[ETeamId::TI_Right]);
 }
 
 ABGBombSpawnManager* ABGGameMode::GetBombSpawnManager()
