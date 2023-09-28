@@ -11,11 +11,13 @@ ABGBombReverseDir::ABGBombReverseDir()
 	BombType = EBombType::BT_Reverse;
 }
 
-void ABGBombReverseDir::OnBombExploded_Implementation()
+void ABGBombReverseDir::OnBombExploded()
 {
-	Super::OnBombExploded_Implementation();
+	Super::OnBombExploded();
 
 	ReverseAllBombsDirection();
+
+	PostBombExploded();
 }
 
 void ABGBombReverseDir::ReverseAllBombsDirection()

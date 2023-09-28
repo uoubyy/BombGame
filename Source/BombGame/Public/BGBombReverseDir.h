@@ -26,7 +26,7 @@ public:
 
 protected:
 
-	virtual void OnBombExploded_Implementation() override;
+	virtual void OnBombExploded() override;
 
 private:
 

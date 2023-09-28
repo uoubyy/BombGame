@@ -112,15 +112,22 @@ void ABGBombBase::OnTriggerBeginOverlap_Implementation(UPrimitiveComponent* Over
 	OnBombExploded();
 }
 
-void ABGBombBase::OnBombExploded_Implementation()
+void ABGBombBase::OnBombExploded()
 {
 	AttachedConveyor = nullptr;
 	BombStatus = EBombStatus::BS_Exploded;
 
 	OnBombExplodedDelegate.Broadcast(CurrentMovingDirection, AttachedConveyorId, DamageAmount, BombUniqueId);
 
+	MeshComponent->SetVisibility(false);
+
 	// TODO: Timer type bomb we need test the position to decide damage direction
 
+	K2_OnBombExploded();
+}
+
+void ABGBombBase::PostBombExploded_Implementation()
+{
 	Destroy();
 }
 

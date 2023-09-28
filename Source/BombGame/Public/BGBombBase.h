@@ -83,8 +83,13 @@ protected:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Bomb Game|Bomb")
 	void OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	virtual void OnBombExploded();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Bomb Game|Bomb")
+	void K2_OnBombExploded();
+
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Bomb Game|Bomb")
-	void OnBombExploded();
+	void PostBombExploded();
 
 private:
 
