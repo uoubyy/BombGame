@@ -3,6 +3,7 @@
 
 #include "UI/BGUserWidget_HUD.h"
 #include "../BGGameMode.h"
+#include "BGBombSpawnManager.h"
 #include "Components/Image.h"
 
 bool UBGUserWidget_HUD::Initialize()
@@ -12,6 +13,9 @@ bool UBGUserWidget_HUD::Initialize()
 	if (ABGGameMode* BGGameMod = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode()))
 	{
 		BGGameMod->OnTeamScoreChanged.AddDynamic(this, &ThisClass::OnTeamScoreChanged);
+		BGGameMod->OnGameStateChanged.AddDynamic(this, &ThisClass::OnGameStateChanged);
+
+		BGGameMod->GetBombSpawnManager()->OnRandomEventActivated.AddDynamic(this, &ThisClass::OnRandomEventActivated);
 	}
 	
 	RightTeamPoints.Add({0, RightTeam_H1});
@@ -35,6 +39,16 @@ bool UBGUserWidget_HUD::Initialize()
 	return Result;
 }
 
+void UBGUserWidget_HUD::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	if (CurrentGameState == EGameState::GS_Start)
+	{
+		ElapsedTime += InDeltaTime;
+	}
+}
+
 void UBGUserWidget_HUD::OnTeamScoreChanged(int32 LeftTeamScore, int32 RightTeamScore)
 {
 	for (int32 Index = 7; Index >= LeftTeamScore; --Index)
@@ -46,4 +60,11 @@ void UBGUserWidget_HUD::OnTeamScoreChanged(int32 LeftTeamScore, int32 RightTeamS
 	{
 		RightTeamPoints[Index]->SetVisibility(ESlateVisibility::Collapsed);
 	}
+}
+
+void UBGUserWidget_HUD::OnGameStateChanged(const EGameState NewGameState)
+{
+	CurrentGameState = NewGameState;
+
+	K2_OnGameStateChanged(NewGameState);
 }

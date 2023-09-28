@@ -75,4 +75,10 @@ struct FRandomEventInfo
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Random Event")
 	bool HasUsed = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Random Event")
+	FString RandomEventName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Random Event")
+	FString RandomEventDes;
 };

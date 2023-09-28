@@ -7,6 +7,8 @@
 #include "../BGGameplayEnum.h"
 #include "BGBombSpawnManager.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnRandomEventActivatedDelegate, ERandomEventType, EventType, const FString&, EventName, const FString&, EventDes);
+
 UCLASS()
 class BOMBGAME_API ABGBombSpawnManager : public AActor
 {
@@ -33,6 +35,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
 	TArray<class ABGBombBase*> GetAllActiveBombsToTeam(ETeamId TargetTeam);
 
+	UPROPERTY(BlueprintAssignable, Category = "Bomb Game|Spawn Manager")
+	FOnRandomEventActivatedDelegate OnRandomEventActivated;
+
 protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
@@ -42,7 +47,7 @@ protected:
 	void OnBombDestroyed(const EConveyorDirection MovingDirection, const int32 ConveyorId, const int32 DamageAmount, const int32 BombId);
 
 private:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Spawn Manager")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Spawn Manager")
 	TArray<TSubclassOf<class ABGBombBase>> AllBombTypeClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Spawn Manager")

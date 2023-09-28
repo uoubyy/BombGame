@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "../BGGameplayEnum.h"
 #include "BGUserWidget_HUD.generated.h"
 
 /**
@@ -17,6 +18,8 @@ class BOMBGAME_API UBGUserWidget_HUD : public UUserWidget
 protected:
 
 	virtual bool Initialize() override;
+
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime);
 
 protected:
 
@@ -76,8 +79,22 @@ protected:
 	UPROPERTY()
 	TMap<int32, class UImage*> LeftTeamPoints;
 
+	UPROPERTY(BlueprintReadOnly)
+	float ElapsedTime;
+
 	//--------------------------------------------------
 
 	UFUNCTION()
 	void OnTeamScoreChanged(int32 LeftTeamScore, int32 RightTeamScore);
+
+	UFUNCTION()
+	void OnGameStateChanged(const EGameState NewGameState);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void K2_OnGameStateChanged(const EGameState NewGameState);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnRandomEventActivated(ERandomEventType EventType, const FString& EventName, const FString& EventDes);
+
+	EGameState CurrentGameState;
 };

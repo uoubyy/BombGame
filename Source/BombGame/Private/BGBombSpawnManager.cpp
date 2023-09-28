@@ -56,6 +56,7 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 		if (RandomEvent.ActiveTime <= ElapsedTime)
 		{
 			RandomEvent.HasUsed = true;
+			OnRandomEventActivated.Broadcast(RandomEvent.EventType, RandomEvent.RandomEventName, RandomEvent.RandomEventDes);
 
 			switch (RandomEvent.EventType)
 			{
@@ -64,7 +65,7 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 				{
 					if (BombInfo.Value)
 					{
-
+						BombInfo.Value->ReverseMovingDirection();
 					}
 				}
 			break;
