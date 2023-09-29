@@ -49,7 +49,7 @@ public:
 	float GetMovingSpeed() const { return CurrentMovingSpeed; }
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
-	void SetMovingSpeed(float NewSpeed) { CurrentMovingSpeed = NewSpeed; }
+	void SetMovingSpeed(float NewSpeed);
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
 	int32 GetDamageAmount() const { return DamageAmount; }
@@ -142,4 +142,6 @@ private:
 	TObjectPtr<class ABGConveyorBase> AttachedConveyor;
 
 	void RecalculateTargetPosition();
+
+	float MaxMovingSpeed;
 };

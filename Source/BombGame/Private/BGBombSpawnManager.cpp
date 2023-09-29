@@ -190,12 +190,16 @@ class ABGBombBase* ABGBombSpawnManager::SpawnNewBombHelper(int32 ConveyorId, TSu
 
 	if (NewBomb)
 	{
-		// TODO: Init Speed
 		float InitSpeed = FMath::RandRange(MinInitSpeed, MaxInitSpeed);
-		// set child bomb speed to be equal to parent bomb speed
+		// Set child bomb speed to be equal to parent bomb speed
 		for (auto& BombInfo : AllActiveBombs) {
 			if (BombInfo.Value->GetAttachedConveyor()->GetConveyorId() == ConveyorId) {
 				InitSpeed = BombInfo.Value->GetMovingSpeed();
+
+				// Clamp InitSpped to MinInitSpeed and MaxInitSpeed 
+				// In case speed up effect
+				InitSpeed = FMath::Clamp(InitSpeed, MinInitSpeed, MaxInitSpeed);
+				break;
 			}
 		}
 		NewBomb->InitBomb(BombUniqueId, InitSpeed, ParentConveyor->GetCurrentMovingDirection(), ParentConveyor);

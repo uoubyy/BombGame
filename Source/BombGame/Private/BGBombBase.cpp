@@ -84,6 +84,8 @@ void ABGBombBase::InitBomb(int32 BombId, float InitSpeed, EConveyorDirection Ini
 
 	CurrentMovingSpeed = InitSpeed;
 	CurrentMovingDirection = InitMovingDirection;
+	MaxMovingSpeed = InitSpeed * 2.0f;
+
 	SetAttachedConveyor(ParentConveyor, false);
 
 	BombStatus = EBombStatus::BS_Moving;
@@ -103,6 +105,16 @@ void ABGBombBase::OnConveyorDirectionChanged(EConveyorDirection NewDirection)
 {
 	CurrentMovingDirection = NewDirection;
 	RecalculateTargetPosition();
+}
+
+void ABGBombBase::SetMovingSpeed(float NewSpeed)
+{
+	if (BombStatus >= EBombStatus::BS_Exploded)
+	{
+		return; // Do nothing if pending destroying
+	}
+	CurrentMovingSpeed = NewSpeed;
+	CurrentMovingSpeed = FMath::Clamp(CurrentMovingSpeed, 0.0f, MaxMovingSpeed);
 }
 
 void ABGBombBase::SetAttachedConveyor(ABGConveyorBase* NewConveyor, bool ResetPosition)
