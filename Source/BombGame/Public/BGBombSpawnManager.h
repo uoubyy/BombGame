@@ -89,6 +89,8 @@ private:
 	UPROPERTY()
 	TObjectPtr<class ABGGameMode> GameModeRef;
 
+	class ABGBombBase* SpawnNewBombHelper(int32 ConveyorId, TSubclassOf<class ABGBombBase> BombClass, class ABGConveyorBase* ParentConveyor);
+
 	float ElapsedTime;
 
 	// TODO: Do not modify

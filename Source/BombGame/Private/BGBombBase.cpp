@@ -107,7 +107,7 @@ void ABGBombBase::OnConveyorDirectionChanged(EConveyorDirection NewDirection)
 
 void ABGBombBase::SetAttachedConveyor(ABGConveyorBase* NewConveyor, bool ResetPosition)
 {
-	if (AttachedConveyor == NewConveyor)
+	if (AttachedConveyor == NewConveyor && !ResetPosition)
 	{
 		return;
 	}
@@ -115,13 +115,12 @@ void ABGBombBase::SetAttachedConveyor(ABGConveyorBase* NewConveyor, bool ResetPo
 	if (AttachedConveyor && AttachedConveyor != NewConveyor)
 	{
 		AttachedConveyor->OnConveyorDirectionChanged.RemoveDynamic(this, &ThisClass::OnConveyorDirectionChanged);
+		NewConveyor->OnConveyorDirectionChanged.AddDynamic(this, &ThisClass::OnConveyorDirectionChanged);
 	}
 
 	AttachedConveyor = NewConveyor;
 	AttachedConveyorId = AttachedConveyor->GetConveyorId();
 	CurrentMovingDirection = AttachedConveyor->GetCurrentMovingDirection();
-
-	AttachedConveyor->OnConveyorDirectionChanged.AddDynamic(this, &ThisClass::OnConveyorDirectionChanged);
 
 	if (ResetPosition)
 	{
@@ -204,13 +203,15 @@ void ABGBombBase::PostBombExploded_Implementation()
 	Destroy();
 }
 
-void ABGBombBase::ToggleVisibilityAndCollision_Implementation(bool EnableOrNot)
+void ABGBombBase::ToggleVisibilityAndCollision(bool EnableOrNot)
 {
 	MeshComponent->SetVisibility(EnableOrNot);
 	IndicatorWidget->SetVisibility(EnableOrNot);
 
 	MeshComponent->SetCollisionEnabled(EnableOrNot ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision);
 	TriggerComponent->SetCollisionEnabled(EnableOrNot ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
+
+	K2_ToggleVisibilityAndCollision(EnableOrNot);
 }
 
 void ABGBombBase::RecalculateTargetPosition()

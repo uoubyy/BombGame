@@ -159,25 +159,9 @@ ABGBombBase* ABGBombSpawnManager::RequestSpawnNewBomb(int32 ConveyorId)
 
 	ABGConveyorBase* ConveyorRef = AllConveyors[ConveyorId];
 
-	FActorSpawnParameters* SpawnParameters = new FActorSpawnParameters;
-	SpawnParameters->SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	TSubclassOf<class ABGBombBase> BombClass = AllBombTypeClass[NewBombTypeIndex];
 
-	ABGBombBase* NewBomb = Cast<ABGBombBase>(GetWorld()->SpawnActor<AActor>(AllBombTypeClass[NewBombTypeIndex], ConveyorRef->GetNewBombSpawnPosition(), FRotator::ZeroRotator, *SpawnParameters));
-
-	if (NewBomb)
-	{
-		// TODO: Init Speed
-		float InitSpeed = FMath::RandRange(MinInitSpeed, MaxInitSpeed);
-		NewBomb->InitBomb(BombUniqueId, InitSpeed, ConveyorRef->GetCurrentMovingDirection(), ConveyorRef);
-
-		NewBomb->OnBombExplodedDelegate.AddDynamic(this, &ThisClass::OnBombDestroyed);
-
-		AllActiveBombs.Add({ BombUniqueId, NewBomb });
-
-		++BombUniqueId;
-	}
-
-	return NewBomb;
+	return SpawnNewBombHelper(ConveyorId, BombClass, ConveyorRef);
 }
 
 ABGBombBase* ABGBombSpawnManager::RequestSpawnNewBombByType(int32 ConveyorId, TSubclassOf<class ABGBombBase> BombClass)
@@ -194,10 +178,15 @@ ABGBombBase* ABGBombSpawnManager::RequestSpawnNewBombByType(int32 ConveyorId, TS
 
 	ABGConveyorBase* ConveyorRef = AllConveyors[ConveyorId];
 
+	return SpawnNewBombHelper(ConveyorId, BombClass, ConveyorRef);
+}
+
+class ABGBombBase* ABGBombSpawnManager::SpawnNewBombHelper(int32 ConveyorId, TSubclassOf<class ABGBombBase> BombClass, class ABGConveyorBase* ParentConveyor)
+{
 	FActorSpawnParameters* SpawnParameters = new FActorSpawnParameters;
 	SpawnParameters->SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	ABGBombBase* NewBomb = Cast<ABGBombBase>(GetWorld()->SpawnActor<AActor>(BombClass, ConveyorRef->GetNewBombSpawnPosition(), FRotator::ZeroRotator, *SpawnParameters));
+	ABGBombBase* NewBomb = Cast<ABGBombBase>(GetWorld()->SpawnActor<AActor>(BombClass, ParentConveyor->GetNewBombSpawnPosition(), FRotator::ZeroRotator, *SpawnParameters));
 
 	if (NewBomb)
 	{
@@ -209,7 +198,7 @@ ABGBombBase* ABGBombSpawnManager::RequestSpawnNewBombByType(int32 ConveyorId, TS
 				InitSpeed = BombInfo.Value->GetMovingSpeed();
 			}
 		}
-		NewBomb->InitBomb(BombUniqueId, InitSpeed, ConveyorRef->GetCurrentMovingDirection(), ConveyorRef);
+		NewBomb->InitBomb(BombUniqueId, InitSpeed, ParentConveyor->GetCurrentMovingDirection(), ParentConveyor);
 
 		NewBomb->OnBombExplodedDelegate.AddDynamic(this, &ThisClass::OnBombDestroyed);
 
