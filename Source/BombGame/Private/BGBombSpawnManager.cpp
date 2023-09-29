@@ -176,28 +176,6 @@ ABGBombBase* ABGBombSpawnManager::RequestSpawnNewBomb(int32 ConveyorId)
 
 	TSubclassOf<class ABGBombBase> BombClass = AllBombTypeClass[NewBombTypeIndex];
 
-	ABGBombBase* NewBomb = Cast<ABGBombBase>(GetWorld()->SpawnActor<AActor>(AllBombTypeClass[NewBombTypeIndex], ConveyorRef->GetNewBombSpawnPosition(), FRotator::ZeroRotator, *SpawnParameters));
-
-	if (NewBomb)
-	{
-		float NewMaxInitSpeed = MaxInitSpeed;
-		for (auto& BombInfo : AllActiveBombs) {
-			if (BombInfo.Value->GetAttachedConveyor()->GetConveyorId() == ConveyorId) {
-			// TODO: fix bomb overlap issue
-				NewMaxInitSpeed = BombInfo.Value->GetMovingSpeed(); 
-			}
-		}
-		// TODO: Init Speed
-		float InitSpeed = FMath::RandRange(MinInitSpeed, NewMaxInitSpeed);
-		NewBomb->InitBomb(BombUniqueId, InitSpeed, ConveyorRef->GetCurrentMovingDirection(), ConveyorRef);
-
-		NewBomb->OnBombExplodedDelegate.AddDynamic(this, &ThisClass::OnBombDestroyed);
-
-		AllActiveBombs.Add({ BombUniqueId, NewBomb });
-
-		++BombUniqueId;
-	}
-
 	return SpawnNewBombHelper(ConveyorId, BombClass, ConveyorRef);
 }
 
