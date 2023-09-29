@@ -69,6 +69,21 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 					}
 				}
 			break;
+
+			case ERandomEventType::RET_BoostAll:
+				for (auto BombInfo : AllActiveBombs)
+				{
+					if (BombInfo.Value)
+					{
+						UE_LOG(LogTemp, Warning, TEXT("Boost bomb original speed: %f"), BombInfo.Value->GetMovingSpeed());
+						float TargetSpeed = BombInfo.Value->GetMovingSpeed()* BoostRate;
+						BombInfo.Value->SetMovingSpeed(TargetSpeed);
+						UE_LOG(LogTemp, Warning, TEXT("Boost bomb boost speed: %f"), TargetSpeed);
+					}
+				}
+
+			break;
+
 			case ERandomEventType::RET_SwitchLane:
 
 			break;

@@ -40,7 +40,7 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Bomb Game|Spawn Manager")
 	FOnRandomEventActivatedDelegate OnRandomEventActivated;
-
+	 
 protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
@@ -58,6 +58,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Spawn Manager")
 	float MaxInitSpeed = 500.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Spawn Manager")
+	float BoostRate;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Spawn Manager")
 	TMap<int32, class ABGConveyorBase*> AllConveyors;

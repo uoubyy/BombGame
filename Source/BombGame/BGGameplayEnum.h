@@ -61,6 +61,7 @@ enum class ERandomEventType : uint8
 	RET_None		UMETA(DisplayName = "None"),
 	RET_SwitchLane	UMETA(DisplayName = "Switch Lane"),
 	RET_ReverseAll	UMETA(DisplayName = "Reverse All"),
+	RET_BoostAll	UMETA(DisplayName = "Boost All"),
 	Count		UMETA(Hidden)
 };
 
