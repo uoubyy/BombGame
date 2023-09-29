@@ -57,6 +57,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
 	void ToggleMovement(bool EnableOrNot);
 
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
+	const EBombType GetBombType() const { return BombType; }
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
+	void SetBombType(EBombType NewBombType) { BombType = NewBombType; }
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")

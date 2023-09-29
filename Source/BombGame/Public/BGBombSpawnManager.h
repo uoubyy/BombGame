@@ -30,6 +30,9 @@ public:
 	class ABGBombBase* RequestSpawnNewBomb(int32 ConveyorId);
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
+	class ABGBombBase* RequestSpawnNewBombByType(int32 ConveyorId, TSubclassOf<class ABGBombBase> BombClass);
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
 	class ABGConveyorBase* GetConveyorrefById(int32 ConveyorId);
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
@@ -75,4 +78,8 @@ private:
 	TObjectPtr<class ABGGameMode> GameModeRef;
 
 	float ElapsedTime;
+
+	// TODO: Do not modify
+	int32 BombUniqueId = 1;
+
 };
