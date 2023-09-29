@@ -9,6 +9,7 @@
 
 #include "Math/UnrealMathUtility.h"
 #include "Math/Vector.h"
+#include <UMG/Public/Components/WidgetComponent.h>
 
 ABGBombBase::ABGBombBase()
 {
@@ -23,6 +24,11 @@ ABGBombBase::ABGBombBase()
 
 	TriggerComponent = CreateDefaultSubobject<USphereComponent>(TEXT("TriggerBox"));
 	TriggerComponent->SetupAttachment(SceneRoot);
+
+	IndicatorWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("IndicatorWidget"));
+	IndicatorWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	IndicatorWidget->SetupAttachment(SceneRoot);
+	IndicatorWidget->SetRelativeLocation(FVector(0.0f, -140.0f, 360.0f));
 
 	BombStatus = EBombStatus::BS_Idle;
 }
@@ -78,7 +84,7 @@ void ABGBombBase::InitBomb(int32 BombId, float InitSpeed, EConveyorDirection Ini
 
 	CurrentMovingSpeed = InitSpeed;
 	CurrentMovingDirection = InitMovingDirection;
-	SetAttachedConveyor(ParentConveyor);
+	SetAttachedConveyor(ParentConveyor, false);
 
 	BombStatus = EBombStatus::BS_Moving;
 }
@@ -99,56 +105,93 @@ void ABGBombBase::OnConveyorDirectionChanged(EConveyorDirection NewDirection)
 	RecalculateTargetPosition();
 }
 
-void ABGBombBase::SetAttachedConveyor(ABGConveyorBase* NewConveyor)
+void ABGBombBase::SetAttachedConveyor(ABGConveyorBase* NewConveyor, bool ResetPosition)
 {
+	if (AttachedConveyor == NewConveyor)
+	{
+		return;
+	}
+
+	if (AttachedConveyor && AttachedConveyor != NewConveyor)
+	{
+		AttachedConveyor->OnConveyorDirectionChanged.RemoveDynamic(this, &ThisClass::OnConveyorDirectionChanged);
+	}
+
 	AttachedConveyor = NewConveyor;
 	AttachedConveyorId = AttachedConveyor->GetConveyorId();
+	CurrentMovingDirection = AttachedConveyor->GetCurrentMovingDirection();
 
 	AttachedConveyor->OnConveyorDirectionChanged.AddDynamic(this, &ThisClass::OnConveyorDirectionChanged);
 
+	if (ResetPosition)
+	{
+		SetActorLocation(AttachedConveyor->GetNewBombSpawnPosition());
+	}
+
 	RecalculateTargetPosition();
+
 	ToggleMovement(true);
+	ToggleVisibilityAndCollision(true);
 }
 
 void ABGBombBase::ToggleMovement(bool EnableOrNot)
 {
-	if (EnableOrNot && BombStatus == EBombStatus::BS_Paused)
+	if (BombStatus >= EBombStatus::BS_Exploded)
 	{
-		BombStatus = EBombStatus::BS_Moving;
+		return; // Do nothing if pending destroying
 	}
-	else if (!EnableOrNot && BombStatus == EBombStatus::BS_Moving)
-	{
-		BombStatus = EBombStatus::BS_Paused;
-	}
+
+	BombStatus = EnableOrNot ? EBombStatus::BS_Moving : EBombStatus::BS_Paused;
 }
 
 void ABGBombBase::RotateMovingToPoint(FVector TargetCenter, float DeltaSeconds, float Speed, float InitDist)
 {
+	if (BombStatus == EBombStatus::BS_Exploded)
+	{
+		return; // Do nothing if pending destroying
+	}
+
+	MeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	TriggerComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 	FVector Direction = (GetActorLocation() - TargetCenter).GetSafeNormal();
 	float Dist = (GetActorLocation() - TargetCenter).Length();
 	Dist -= Speed * DeltaSeconds;
 
-	const FRotator Rot(0.0f, 0.0f, Speed * DeltaSeconds);
+	const FRotator Rot(0.0f, Speed * DeltaSeconds, 0.0f);
 	FVector NewDirection = Rot.RotateVector(Direction);
 
 	FVector NewPosition = TargetCenter + NewDirection * Dist;
 	SetActorLocation(NewPosition);
+
+	// always hide the indicator when rotate moving to target
+	IndicatorWidget->SetVisibility(false);
+
+	if (Dist <= 10.0f)
+	{
+		ToggleVisibilityAndCollision(false);
+	}
 }
 
 void ABGBombBase::OnTriggerBeginOverlap_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ABGBombBase %s OnTriggerBeginOverlap with %s."), *GetName(), *OtherActor->GetName());
+	UE_LOG(LogTemp, Warning, TEXT("ABGBombBase %s id %d OnTriggerBeginOverlap with %s."), *GetName(), BombUniqueId, *OtherActor->GetName());
 
 	OnBombExploded();
 }
 
 void ABGBombBase::OnBombExploded()
 {
+	if (BombStatus >= EBombStatus::BS_Exploded)
+	{
+		return;
+	}
+
 	BombStatus = EBombStatus::BS_Exploded;
 
 	OnBombExplodedDelegate.Broadcast(CurrentMovingDirection, AttachedConveyorId, DamageAmount, BombUniqueId);
 
-	MeshComponent->SetVisibility(false);
+	ToggleVisibilityAndCollision(false);
 
 	// TODO: Timer type bomb we need test the position to decide damage direction
 
@@ -159,6 +202,15 @@ void ABGBombBase::PostBombExploded_Implementation()
 {
 	AttachedConveyor = nullptr;
 	Destroy();
+}
+
+void ABGBombBase::ToggleVisibilityAndCollision_Implementation(bool EnableOrNot)
+{
+	MeshComponent->SetVisibility(EnableOrNot);
+	IndicatorWidget->SetVisibility(EnableOrNot);
+
+	MeshComponent->SetCollisionEnabled(EnableOrNot ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision);
+	TriggerComponent->SetCollisionEnabled(EnableOrNot ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
 }
 
 void ABGBombBase::RecalculateTargetPosition()

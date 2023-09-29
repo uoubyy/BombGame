@@ -58,7 +58,10 @@ public:
 	ABGConveyorBase* GetAttachedConveyor() const { return AttachedConveyor; }
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
-	void SetAttachedConveyor(ABGConveyorBase* NewConveyor);
+	const int32 GetAttachedConveyorId() const { return AttachedConveyorId; }
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
+	void SetAttachedConveyor(ABGConveyorBase* NewConveyor, bool ResetPosition);
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
 	void ToggleMovement(bool EnableOrNot);
@@ -82,6 +85,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class USphereComponent* TriggerComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class UWidgetComponent* IndicatorWidget;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Bomb")
 	int32 AttachedConveyorId;
@@ -108,6 +114,9 @@ protected:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Bomb Game|Bomb")
 	void PostBombExploded();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Bomb Game|Bomb")
+	void ToggleVisibilityAndCollision(bool EnableOrNot);
 
 private:
 

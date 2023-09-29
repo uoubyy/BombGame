@@ -61,6 +61,9 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
 	void PostSwitchLane(ABGBombBase* BombOne, ABGBombBase* BombTwo);
 
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
+	void PostBlackHole();
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Spawn Manager")
 	TArray<TSubclassOf<class ABGBombBase>> AllBombTypeClass;

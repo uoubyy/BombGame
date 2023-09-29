@@ -296,14 +296,41 @@ void ABGBombSpawnManager::PostSwitchLane(ABGBombBase* BombOne, ABGBombBase* Bomb
 		ABGConveyorBase* ConveyorOfBombOne = BombOne->GetAttachedConveyor();
 		ABGConveyorBase* ConveyorOfBombTwo = BombTwo->GetAttachedConveyor();
 
-		ConveyorOfBombOne->OnConveyorDirectionChanged.RemoveDynamic(BombOne, &ABGBombBase::OnConveyorDirectionChanged);
-		ConveyorOfBombTwo->OnConveyorDirectionChanged.RemoveDynamic(BombTwo, &ABGBombBase::OnConveyorDirectionChanged);
-
-		BombOne->SetAttachedConveyor(ConveyorOfBombTwo);
-		BombTwo->SetAttachedConveyor(ConveyorOfBombOne);
+		BombOne->SetAttachedConveyor(ConveyorOfBombTwo, false);
+		BombTwo->SetAttachedConveyor(ConveyorOfBombOne, false);
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("PostSwitchLane with Invalid Bomb!"));
+	}
+}
+
+void ABGBombSpawnManager::PostBlackHole()
+{
+	TArray<int32> CurrentConveyorsId;
+	for (auto& BombInfo : AllActiveBombs)
+	{
+		if(BombInfo.Value)
+		{ 
+			CurrentConveyorsId.Add(BombInfo.Value->GetAttachedConveyorId());
+		}
+	}
+
+	int32 LastIndex = CurrentConveyorsId.Num() - 1;
+	for (int32 i = 0; i < LastIndex; ++i)
+	{
+		int32 Index = FMath::RandRange(i, LastIndex);
+		if (i != Index)
+		{
+			CurrentConveyorsId.Swap(i, Index);
+		}
+	}
+
+	int32 Index = 0;
+	auto It = AllActiveBombs.CreateConstIterator();
+	for (It, Index; It; ++It, ++Index)
+	{
+		ABGConveyorBase* NewConveyor = AllConveyors[CurrentConveyorsId[Index]];
+		It.Value()->SetAttachedConveyor(NewConveyor, true);
 	}
 }
