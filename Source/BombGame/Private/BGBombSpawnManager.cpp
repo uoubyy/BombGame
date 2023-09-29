@@ -259,7 +259,11 @@ void ABGBombSpawnManager::SpawnBombForAllConveyors()
 
 void ABGBombSpawnManager::OnBombDestroyed(const EConveyorDirection MovingDirection, const int32 ConveyorId, const int32 DamageAmount, const int32 BombId)
 {
-	ensureMsgf(AllActiveBombs.Contains(BombId), TEXT("OnBombDestroyed with Invalid Id %d"), BombId);
+	//ensureMsgf(AllActiveBombs.Contains(BombId), TEXT("OnBombDestroyed with Invalid Id %d"), BombId);
+	if (!AllActiveBombs.Contains(BombId))
+	{
+		return;
+	}
 
 	ABGBombBase* BombRef = AllActiveBombs[BombId];
 	if(BombRef->GetBombType() != EBombType::BT_Child)
