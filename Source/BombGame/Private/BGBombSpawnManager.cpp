@@ -76,7 +76,10 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 					if (BombInfo.Value)
 					{
 						UE_LOG(LogTemp, Warning, TEXT("Boost bomb original speed: %f"), BombInfo.Value->GetMovingSpeed());
-						float TargetSpeed = BombInfo.Value->GetMovingSpeed() * BoostRate;
+						
+						float NewBoostRate = FMath::RandRange(1.2f, BoostRate);
+						float TargetSpeed = BombInfo.Value->GetMovingSpeed() * NewBoostRate;
+
 						BombInfo.Value->SetMovingSpeed(TargetSpeed);
 						UE_LOG(LogTemp, Warning, TEXT("Boost bomb boost speed: %f"), TargetSpeed);
 					}
