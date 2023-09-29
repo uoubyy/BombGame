@@ -12,7 +12,7 @@ bool UBGUserWidget_HUD::Initialize()
 
 	if (ABGGameMode* BGGameMod = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode()))
 	{
-		BGGameMod->OnTeamScoreChanged.AddDynamic(this, &ThisClass::OnTeamScoreChanged);
+		BGGameMod->OnTeamHealthChanged.AddDynamic(this, &ThisClass::OnTeamHealthChanged);
 		BGGameMod->OnGameStateChanged.AddDynamic(this, &ThisClass::OnGameStateChanged);
 
 		BGGameMod->GetBombSpawnManager()->OnRandomEventActivated.AddDynamic(this, &ThisClass::OnRandomEventActivated);
@@ -49,14 +49,14 @@ void UBGUserWidget_HUD::NativeTick(const FGeometry& MyGeometry, float InDeltaTim
 	}
 }
 
-void UBGUserWidget_HUD::OnTeamScoreChanged(int32 LeftTeamScore, int32 RightTeamScore)
+void UBGUserWidget_HUD::OnTeamHealthChanged(int32 LeftTeamHealth, int32 RightTeamHealth)
 {
-	for (int32 Index = 7; Index >= LeftTeamScore; --Index)
+	for (int32 Index = 7; Index >= LeftTeamHealth; --Index)
 	{
 		LeftTeamPoints[Index]->SetVisibility(ESlateVisibility::Collapsed);
 	}
 
-	for (int32 Index = 7; Index >= RightTeamScore; --Index)
+	for (int32 Index = 7; Index >= RightTeamHealth; --Index)
 	{
 		RightTeamPoints[Index]->SetVisibility(ESlateVisibility::Collapsed);
 	}

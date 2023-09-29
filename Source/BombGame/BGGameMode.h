@@ -13,7 +13,7 @@
 #include "BGGameMode.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameStateChangedDelegate, const EGameState, NewGameState);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnTeamScoreChangedDelegate, int32, LeftTeamScore, int32, RightTeamScore);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnTeamHealthChangedDelegate, int32, LeftTeamHealth, int32, RightTeamHealth);
 
 UCLASS(minimalapi)
 class ABGGameMode : public AGameModeBase
@@ -55,7 +55,7 @@ public:
 	class ABGBombSpawnManager* GetBombSpawnManager();
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
-	int32 GetTeamScore(ETeamId TargetTeam);
+	int32 GetTeamHealthPoints(ETeamId TargetTeam);
 
 	// Total countdown time
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
@@ -72,7 +72,7 @@ public:
 	FOnGameStateChangedDelegate OnGameStateChanged;
 
 	UPROPERTY(BlueprintAssignable, Category = "Bomb Game|Game Mode")
-	FOnTeamScoreChangedDelegate OnTeamScoreChanged;
+	FOnTeamHealthChangedDelegate OnTeamHealthChanged;
 
 protected:
 	// Called when the game starts or when spawned

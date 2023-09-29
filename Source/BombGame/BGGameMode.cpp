@@ -182,7 +182,7 @@ void ABGGameMode::ApplyDamage(ETeamId TargetTeam, int32 DamageAmount)
 		TeamsHealthPoints[TargetTeam] = 0;
 	}
 
-	OnTeamScoreChanged.Broadcast(TeamsHealthPoints[ETeamId::TI_Left], TeamsHealthPoints[ETeamId::TI_Right]);
+	OnTeamHealthChanged.Broadcast(TeamsHealthPoints[ETeamId::TI_Left], TeamsHealthPoints[ETeamId::TI_Right]);
 }
 
 ABGBombSpawnManager* ABGGameMode::GetBombSpawnManager()
@@ -190,7 +190,7 @@ ABGBombSpawnManager* ABGGameMode::GetBombSpawnManager()
 	return BombSpawnManager;
 }
 
-int32 ABGGameMode::GetTeamScore(ETeamId TargetTeam)
+int32 ABGGameMode::GetTeamHealthPoints(ETeamId TargetTeam)
 {
 	return TeamsHealthPoints[TargetTeam];
 }
