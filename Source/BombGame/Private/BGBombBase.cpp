@@ -112,9 +112,12 @@ void ABGBombBase::SetAttachedConveyor(ABGConveyorBase* NewConveyor, bool ResetPo
 		return;
 	}
 
-	if (AttachedConveyor && AttachedConveyor != NewConveyor)
+	if (AttachedConveyor != NewConveyor)
 	{
-		AttachedConveyor->OnConveyorDirectionChanged.RemoveDynamic(this, &ThisClass::OnConveyorDirectionChanged);
+		if(AttachedConveyor)
+		{ 
+			AttachedConveyor->OnConveyorDirectionChanged.RemoveDynamic(this, &ThisClass::OnConveyorDirectionChanged);
+		}
 		NewConveyor->OnConveyorDirectionChanged.AddDynamic(this, &ThisClass::OnConveyorDirectionChanged);
 	}
 
