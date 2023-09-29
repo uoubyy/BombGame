@@ -69,6 +69,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
 	void SetBombType(EBombType NewBombType) { BombType = NewBombType; }
 
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
+	void RotateMovingToPoint(FVector TargetCenter, float DeltaSeconds, float Speed, float InitDist);
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")

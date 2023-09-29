@@ -55,6 +55,9 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Bomb Game|Spawn Manager")
 	void K2_OnRandomEventLaneSwitch(ABGBombBase* BombOne, ABGBombBase* BombTwo);
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Bomb Game|Spawn Manager")
+	void K2_OnBlackHoleActivated();
+
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
 	void PostSwitchLane(ABGBombBase* BombOne, ABGBombBase* BombTwo);
 

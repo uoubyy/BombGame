@@ -68,7 +68,7 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 						ConveyorInfo.Value->ReverseMovingDirection();
 					}
 				}
-			break;
+				break;
 
 			case ERandomEventType::RET_BoostAll:
 				for (auto BombInfo : AllActiveBombs)
@@ -76,13 +76,13 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 					if (BombInfo.Value)
 					{
 						UE_LOG(LogTemp, Warning, TEXT("Boost bomb original speed: %f"), BombInfo.Value->GetMovingSpeed());
-						float TargetSpeed = BombInfo.Value->GetMovingSpeed()* BoostRate;
+						float TargetSpeed = BombInfo.Value->GetMovingSpeed() * BoostRate;
 						BombInfo.Value->SetMovingSpeed(TargetSpeed);
 						UE_LOG(LogTemp, Warning, TEXT("Boost bomb boost speed: %f"), TargetSpeed);
 					}
 				}
 
-			break;
+				break;
 
 			case ERandomEventType::RET_SwitchLane:
 			{
@@ -112,9 +112,9 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 						BombTwo = It.Value();
 					}
 				}
-				
-				if(BombOne && BombTwo)
-				{ 
+
+				if (BombOne && BombTwo)
+				{
 					K2_OnRandomEventLaneSwitch(BombOne, BombTwo);
 				}
 			}
@@ -127,7 +127,17 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 						NewBomb->SetBombType(EBombType::BT_Child);
 					}
 				}
-			break;
+				break;
+			case ERandomEventType::RET_BlackHole:
+				K2_OnBlackHoleActivated();
+				for (auto BombInfo : AllActiveBombs)
+				{
+					if (BombInfo.Value)
+					{
+						BombInfo.Value->ToggleMovement(false);
+					}
+				}
+				break;
 			}
 
 		}
@@ -162,7 +172,7 @@ ABGBombBase* ABGBombSpawnManager::RequestSpawnNewBomb(int32 ConveyorId)
 
 		NewBomb->OnBombExplodedDelegate.AddDynamic(this, &ThisClass::OnBombDestroyed);
 
-		AllActiveBombs.Add({ BombUniqueId, NewBomb} );
+		AllActiveBombs.Add({ BombUniqueId, NewBomb });
 
 		++BombUniqueId;
 	}
@@ -176,8 +186,8 @@ ABGBombBase* ABGBombSpawnManager::RequestSpawnNewBombByType(int32 ConveyorId, TS
 	UE_LOG(LogTemp, Warning, TEXT("Conveyor %i request to spawn another bomb"), ConveyorId);
 	int32 BombTypeCnt = AllBombTypeClass.Num();
 
-	if(BombClass == nullptr)
-	{ 
+	if (BombClass == nullptr)
+	{
 		int32 NewBombTypeIndex = FMath::RandRange(0, BombTypeCnt - 1);
 		BombClass = AllBombTypeClass[NewBombTypeIndex];
 	}
@@ -259,15 +269,16 @@ void ABGBombSpawnManager::SpawnBombForAllConveyors()
 
 void ABGBombSpawnManager::OnBombDestroyed(const EConveyorDirection MovingDirection, const int32 ConveyorId, const int32 DamageAmount, const int32 BombId)
 {
-	//ensureMsgf(AllActiveBombs.Contains(BombId), TEXT("OnBombDestroyed with Invalid Id %d"), BombId);
+	UE_LOG(LogTemp, Warning, TEXT("BombSpawnManager OnBombDestroyed %d"), BombId);
 	if (!AllActiveBombs.Contains(BombId))
 	{
 		return;
 	}
+	// ensureMsgf(AllActiveBombs.Contains(BombId), TEXT("OnBombDestroyed with Invalid Id %d"), BombId);
 
 	ABGBombBase* BombRef = AllActiveBombs[BombId];
-	if(BombRef->GetBombType() != EBombType::BT_Child)
-	{ 
+	if (BombRef->GetBombType() != EBombType::BT_Child)
+	{
 		RequestSpawnNewBomb(ConveyorId);
 	}
 

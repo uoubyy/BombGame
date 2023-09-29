@@ -122,6 +122,19 @@ void ABGBombBase::ToggleMovement(bool EnableOrNot)
 	}
 }
 
+void ABGBombBase::RotateMovingToPoint(FVector TargetCenter, float DeltaSeconds, float Speed, float InitDist)
+{
+	FVector Direction = (GetActorLocation() - TargetCenter).GetSafeNormal();
+	float Dist = (GetActorLocation() - TargetCenter).Length();
+	Dist -= Speed * DeltaSeconds;
+
+	const FRotator Rot(0.0f, 0.0f, Speed * DeltaSeconds);
+	FVector NewDirection = Rot.RotateVector(Direction);
+
+	FVector NewPosition = TargetCenter + NewDirection * Dist;
+	SetActorLocation(NewPosition);
+}
+
 void ABGBombBase::OnTriggerBeginOverlap_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("ABGBombBase %s OnTriggerBeginOverlap with %s."), *GetName(), *OtherActor->GetName());

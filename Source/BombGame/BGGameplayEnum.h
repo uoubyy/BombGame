@@ -64,6 +64,7 @@ enum class ERandomEventType : uint8
 	RET_ReverseAll	UMETA(DisplayName = "Reverse All"),
 	RET_BoostAll	UMETA(DisplayName = "Boost All"),
 	RET_AddBomb     UMETA(DisplayName = "Add Bomb"),
+	RET_BlackHole   UMETA(DisplayName = "Black Hole"),
 	Count			UMETA(Hidden)
 };
 
