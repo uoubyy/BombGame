@@ -115,8 +115,11 @@ protected:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Bomb Game|Bomb")
 	void PostBombExploded();
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Bomb Game|Bomb")
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
 	void ToggleVisibilityAndCollision(bool EnableOrNot);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Bomb Game|Bomb")
+	void K2_ToggleVisibilityAndCollision(bool EnableOrNot);
 
 private:
 
