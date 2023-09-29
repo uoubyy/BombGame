@@ -23,7 +23,8 @@ class ABGGameMode : public AGameModeBase
 public:
 	ABGGameMode();
 
-	// Called every frame
+	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
+
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void StartPlay() override;
@@ -34,12 +35,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
 	class ABGConveyorBase* GetConveyorrefById(int32 ConveyorId);
-
-	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
-	void RegisterCharacter(int CharacterId, class ABGCharacter* CharacterRef);
-
-	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
-	class ABGCharacter* GetCharacterRefById(int32 CharacterId);
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
 	void UpdateReadyPlayers();
@@ -71,7 +66,7 @@ public:
 	float ReadyCountDownTime;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
-	int PlayerNums;
+	int PlayerNums = 4;
 
 	UPROPERTY(BlueprintAssignable, Category = "Bomb Game|Game Mode")
 	FOnGameStateChangedDelegate OnGameStateChanged;
@@ -83,13 +78,15 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual APawn* SpawnDefaultPawnFor_Implementation(AController* NewPlayer, AActor* StartSpot) override;
+
 private:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Game Mode")
-	TMap<int32, class ABGCharacter*> AllCharacters;
+	TMap<ETeamId, int32> TeamsHealthPoints;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Game Mode")
-	TMap<ETeamId, int32> TeamsHealthPoints;
+	TMap<FName, TObjectPtr<class APlayerStart>> AllStartPoints;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Game Mode")
 	int32 MaxHealthPoints = 8;

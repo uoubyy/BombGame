@@ -17,8 +17,13 @@ public:
 
 	virtual void BeginPlay() override;
 
+	virtual void PostInitializeComponents() override;
+
 	UFUNCTION()
 	void OnCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit);
+
+	UFUNCTION(BlueprintCallable)
+	void SetPlayerId(int32 NewPlayerId);
 
 private:
 
@@ -27,7 +32,7 @@ private:
 
 protected:
 	
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = BombGame, meta = (AllowPrivateAccess = "true"))
-	int32 PlayerId;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = BombGame, meta = (AllowPrivateAccess = "true"))
+	int32 PlayerId = 0;
 };
 

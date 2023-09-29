@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "BGBombSpawnManager.h"
 #include "BGPlayerState.h"
+#include <GameFramework/PlayerStart.h>
 
 ABGGameMode::ABGGameMode()
 {
@@ -18,6 +19,26 @@ ABGGameMode::ABGGameMode()
 	CountdownTime = 10000;
 
 	ReadyPlayers = 0;
+}
+
+void ABGGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
+{
+	Super::InitGame(MapName, Options, ErrorMessage);
+
+	{
+		TArray<AActor*> OutActors;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), OutActors);
+
+		for (auto ActorRef : OutActors)
+		{
+			if (APlayerStart* StartPoint = Cast<APlayerStart>(ActorRef))
+			{
+				AllStartPoints.Add({ StartPoint->PlayerStartTag, StartPoint });
+			}
+		}
+
+		ensureMsgf(AllStartPoints.Num() >= PlayerNums, TEXT("Not enough PlayerStart, needs %d but only finds %d."), PlayerNums, AllStartPoints.Num());
+	}
 }
 
 void ABGGameMode::StartPlay()
@@ -34,15 +55,16 @@ void ABGGameMode::StartPlay()
 		{
 			if (ABGCharacter* BGCharacter = Cast<ABGCharacter>(TargetActor))
 			{
-				ABGPlayerState* BGPlayerState = BGCharacter->GetPlayerState<ABGPlayerState>();
-
-				if (BGCharacter->ActorHasTag(FName("LeftTeam")))
-				{
-					BGPlayerState->SetPlayerTeamId(ETeamId::TI_Left);
-				}
-				else
-				{
-					BGPlayerState->SetPlayerTeamId(ETeamId::TI_Right);
+				if(ABGPlayerState* BGPlayerState = BGCharacter->GetPlayerState<ABGPlayerState>())
+				{ 
+					if (BGCharacter->ActorHasTag(FName("LeftTeam")))
+					{
+						BGPlayerState->SetPlayerTeamId(ETeamId::TI_Left);
+					}
+					else
+					{
+						BGPlayerState->SetPlayerTeamId(ETeamId::TI_Right);
+					}
 				}
 			}
 		}
@@ -54,7 +76,15 @@ void ABGGameMode::StartPlay()
 
 APlayerController* ABGGameMode::Login(UPlayer* NewPlayer, ENetRole InRemoteRole, const FString& Portal, const FString& Options, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
 {
-	return Super::Login(NewPlayer, InRemoteRole, Portal, Options, UniqueId, ErrorMessage);
+	APlayerController* NewPlayerController = Super::Login(NewPlayer, InRemoteRole, Portal, Options, UniqueId, ErrorMessage);
+
+	if (ULocalPlayer* NewLocalPlayer = Cast<ULocalPlayer>(NewPlayer))
+	{
+		EAutoReceiveInput::Type AutoPossesTarget = EAutoReceiveInput::Type(NewLocalPlayer->GetControllerId() + 1);
+		NewPlayerController->AutoReceiveInput = AutoPossesTarget;
+	}
+
+	return NewPlayerController;
 }
 
 AActor* ABGGameMode::ChoosePlayerStart_Implementation(AController* Player)
@@ -79,6 +109,30 @@ void ABGGameMode::BeginPlay()
 	}
 }
 
+APawn* ABGGameMode::SpawnDefaultPawnFor_Implementation(AController* NewPlayer, AActor* StartSpot)
+{
+	int32 ControllerId = 0;
+	if (APlayerController* PlayerController = Cast<APlayerController>(NewPlayer))
+	{
+		ControllerId = UGameplayStatics::GetPlayerControllerID(PlayerController);
+		FString TargetPoint = FString::Printf(TEXT("P%d"), ControllerId);
+
+		StartSpot = AllStartPoints[FName(TargetPoint)];
+	}
+
+	APawn* NewPawn = Super::SpawnDefaultPawnFor_Implementation(NewPlayer, StartSpot);
+	if(ControllerId < PlayerNums / 2)
+	{ 
+		NewPawn->Tags.Add("LeftTeam");
+	}
+	else
+	{
+		NewPawn->Tags.Add("RightTeam");
+	}
+
+	return NewPawn;
+}
+
 void ABGGameMode::SetGameState(const EGameState NewGameState)
 {
 	CurrentGameState = NewGameState;
@@ -88,31 +142,6 @@ void ABGGameMode::SetGameState(const EGameState NewGameState)
 ABGConveyorBase* ABGGameMode::GetConveyorrefById(int32 ConveyorId)
 {
 	return BombSpawnManager ? BombSpawnManager->GetConveyorrefById(ConveyorId) : nullptr;
-}
-
-// Register the character when it joins at first time
-void ABGGameMode::RegisterCharacter(int CharacterId, class ABGCharacter* CharacterRef)
-{
-	bool DuplicatedCheck = AllCharacters.Contains(CharacterId);
-	ensureMsgf(DuplicatedCheck == false, TEXT("Register duplicated conveyors with the same id %d"), CharacterId);
-
-	if (DuplicatedCheck)
-	{
-		return;
-	}
-
-	AllCharacters.Add({CharacterId , CharacterRef});
-}
-
-// Get the character reference by Id
-ABGCharacter* ABGGameMode::GetCharacterRefById(int32 CharacterId)
-{
-	if (AllCharacters.Contains(CharacterId))
-	{
-		return AllCharacters[CharacterId];
-	}
-
-	return nullptr;
 }
 
 void ABGGameMode::UpdateReadyPlayers()

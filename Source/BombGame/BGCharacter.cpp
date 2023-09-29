@@ -8,6 +8,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
+#include <Kismet/GameplayStatics.h>
 
 ABGCharacter::ABGCharacter()
 {
@@ -45,7 +46,25 @@ void ABGCharacter::BeginPlay()
 }
 
 
+void ABGCharacter::PostInitializeComponents()
+{
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	{
+		int32 ControllerId = UGameplayStatics::GetPlayerControllerID(PlayerController);
+		EAutoReceiveInput::Type AutoPossesTarget = EAutoReceiveInput::Type(ControllerId + 1);
+		AutoReceiveInput = AutoPossesTarget;
+		AutoPossessPlayer = AutoPossesTarget;
+	}
+
+	Super::PostInitializeComponents();
+}
+
 void ABGCharacter::OnCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
 {
 
+}
+
+void ABGCharacter::SetPlayerId(int32 NewPlayerId)
+{
+	PlayerId = NewPlayerId;
 }
