@@ -11,6 +11,7 @@ enum class EBombType : uint8
 	BT_Reverse	UMETA(DisplayName = "Reverse Bomb"),
 	BT_SpeedUp	UMETA(DisplayName = "Speed Bomb"),
 	BT_BoostAll	UMETA(DisplayName = "Boost All Bombs"),
+	BT_Child	UMETA(DisplayName = "Child Bomb"),
 	Count		UMETA(Hidden)
 };
 
@@ -61,6 +62,11 @@ enum class ERandomEventType : uint8
 	RET_None		UMETA(DisplayName = "None"),
 	RET_SwitchLane	UMETA(DisplayName = "Switch Lane"),
 	RET_ReverseAll	UMETA(DisplayName = "Reverse All"),
+<<<<<<< HEAD
+	RET_BoostAll	UMETA(DisplayName = "Boost All"),
+=======
+	RET_AddBomb     UMETA(DisplayName = "Add Bomb"),
+>>>>>>> 36ccc06bda395e3d36d1a46e7ef6d0eb83d673e1
 	Count		UMETA(Hidden)
 };
 
@@ -83,4 +89,7 @@ struct FRandomEventInfo
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Random Event")
 	FString RandomEventDes;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Random Event")
+	TSubclassOf<class ABGBombBase> ChildBombClass;
 };

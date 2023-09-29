@@ -30,6 +30,9 @@ public:
 	class ABGBombBase* RequestSpawnNewBomb(int32 ConveyorId);
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
+	class ABGBombBase* RequestSpawnNewBombByType(int32 ConveyorId, TSubclassOf<class ABGBombBase> BombClass);
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
 	class ABGConveyorBase* GetConveyorrefById(int32 ConveyorId);
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
@@ -40,7 +43,7 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Bomb Game|Spawn Manager")
 	FOnRandomEventActivatedDelegate OnRandomEventActivated;
-
+	 
 protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
@@ -59,6 +62,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Spawn Manager")
 	float MaxInitSpeed = 500.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Spawn Manager")
+	float BoostRate;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Spawn Manager")
 	TMap<int32, class ABGConveyorBase*> AllConveyors;
 
@@ -72,4 +78,8 @@ private:
 	TObjectPtr<class ABGGameMode> GameModeRef;
 
 	float ElapsedTime;
+
+	// TODO: Do not modify
+	int32 BombUniqueId = 1;
+
 };
