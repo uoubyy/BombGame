@@ -123,7 +123,19 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 			case ERandomEventType::RET_AddBomb:
 				for (auto ConveyorInfo : AllConveyors) {
 					if (ConveyorInfo.Value) {
-						ABGBombBase* NewBomb = RequestSpawnNewBombByType(ConveyorInfo.Value->GetConveyorId(), RandomEvent.ChildBombClass);
+						TSubclassOf<class ABGBombBase> ChildBombClass;
+						for (auto& BombInfo : AllActiveBombs) {
+							if (BombInfo.Value->GetAttachedConveyor()->GetConveyorId() == ConveyorInfo.Value->GetConveyorId()) {
+								if (BombInfo.Value->GetDamageAmount() > 0){ // don't add another damage bomb if there is already one on the conveyor
+									ChildBombClass = RandomEvent.ChildBombClass;
+								}else{
+									int32 BombTypeCnt = AllBombTypeClass.Num();
+									int32 NewBombTypeIndex = FMath::RandRange(0, BombTypeCnt - 1);
+									ChildBombClass = AllBombTypeClass[NewBombTypeIndex];
+								}
+							}
+						}
+						ABGBombBase* NewBomb = RequestSpawnNewBombByType(ConveyorInfo.Value->GetConveyorId(), ChildBombClass);
 						NewBomb->SetBombType(EBombType::BT_Child);
 					}
 				}
@@ -166,8 +178,15 @@ ABGBombBase* ABGBombSpawnManager::RequestSpawnNewBomb(int32 ConveyorId)
 
 	if (NewBomb)
 	{
+		float NewMaxInitSpeed = MaxInitSpeed;
+		for (auto& BombInfo : AllActiveBombs) {
+			if (BombInfo.Value->GetAttachedConveyor()->GetConveyorId() == ConveyorId) {
+			// TODO: fix bomb overlap issue
+				NewMaxInitSpeed = BombInfo.Value->GetMovingSpeed(); 
+			}
+		}
 		// TODO: Init Speed
-		float InitSpeed = FMath::RandRange(MinInitSpeed, MaxInitSpeed);
+		float InitSpeed = FMath::RandRange(MinInitSpeed, NewMaxInitSpeed);
 		NewBomb->InitBomb(BombUniqueId, InitSpeed, ConveyorRef->GetCurrentMovingDirection(), ConveyorRef);
 
 		NewBomb->OnBombExplodedDelegate.AddDynamic(this, &ThisClass::OnBombDestroyed);
