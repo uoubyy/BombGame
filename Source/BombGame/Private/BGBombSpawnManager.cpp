@@ -85,6 +85,40 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 			break;
 
 			case ERandomEventType::RET_SwitchLane:
+			{
+				int32 BombMapSize = AllActiveBombs.Num();
+				int32 BombOneIndex = FMath::RandRange(0, BombMapSize - 1);
+				int32 BombTwoIndex = BombOneIndex;
+
+				while (BombOneIndex == BombTwoIndex)
+				{
+					BombTwoIndex = FMath::RandRange(0, BombMapSize - 1);
+				}
+
+				ABGBombBase* BombOne = nullptr;
+				ABGBombBase* BombTwo = nullptr;
+
+				int32 Index = 0;
+				auto It = AllActiveBombs.CreateConstIterator();
+				for (It, Index; It; ++It, ++Index)
+				{
+					if (Index == BombOneIndex)
+					{
+						BombOne = It.Value();
+					}
+
+					if (Index == BombTwoIndex)
+					{
+						BombTwo = It.Value();
+					}
+				}
+
+				// TODO: Bind Delegate
+
+				// TODO: Update Bomb's conveyor reference 
+
+				K2_OnRandomEventLaneSwitch(BombOne, BombTwo);
+			}
 
 			break;
 			case ERandomEventType::RET_AddBomb:
@@ -240,4 +274,3 @@ void ABGBombSpawnManager::OnBombDestroyed(const EConveyorDirection MovingDirecti
 
 	AllActiveBombs.Remove(BombId);
 }
-

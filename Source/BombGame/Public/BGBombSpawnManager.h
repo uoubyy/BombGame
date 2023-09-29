@@ -52,6 +52,9 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
 	void OnBombDestroyed(const EConveyorDirection MovingDirection, const int32 ConveyorId, const int32 DamageAmount, const int32 BombId);
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Bomb Game|Spawn Manager")
+	void K2_OnRandomEventLaneSwitch(ABGBombBase* BombOne, ABGBombBase* BombTwo);
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Spawn Manager")
 	TArray<TSubclassOf<class ABGBombBase>> AllBombTypeClass;

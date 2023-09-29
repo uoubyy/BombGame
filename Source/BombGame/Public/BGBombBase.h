@@ -55,6 +55,9 @@ public:
 	int32 GetDamageAmount() const { return DamageAmount; }
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
+	ABGConveyorBase* GetAttachedConveyor() const { return AttachedConveyor; }
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
 	void ToggleMovement(bool EnableOrNot);
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
