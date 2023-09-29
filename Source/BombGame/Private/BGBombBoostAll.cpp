@@ -32,19 +32,19 @@ void ABGBombBoostAll::BoostAllBombs(float Duration, float Rate)
 		Bomb->SetMovingSpeed(TargetMovingSpeed);
 	}
 
-	/*GetWorldTimerManager().SetTimer(BoostDurationTimerHandler, this, &ABGBombBoostAll::ReturnToOriginSpeed, 0, false, Duration);*/
+	GetWorldTimerManager().SetTimer(BoostDurationTimerHandler, this, &ABGBombBoostAll::ReturnToOriginSpeed, 0, false, Duration);
 }
 
 void ABGBombBoostAll::ReturnToOriginSpeed()
 {
-// 	for (auto Bomb : AllBombs)
-// 	{
-// 		if (Bomb)
-// 		{
-// 			UE_LOG(LogTemp, Warning, TEXT("Return to original speed, bomb %d"), Bomb);
-// 			float TempMovingSpeed = Bomb->GetMovingSpeed() / 2;
-// 			Bomb->SetMovingSpeed(TempMovingSpeed);
-// 		}
-// 		
-// 	}
+	for (auto Bomb : AllBombs)
+	{
+		if (Bomb)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Return to original speed, bomb %d"), Bomb);
+			float TempMovingSpeed = Bomb->GetMovingSpeed() / 2;
+			Bomb->SetMovingSpeed(TempMovingSpeed);
+		}
+		
+	}
 }

@@ -49,7 +49,7 @@ public:
 	float GetMovingSpeed() const { return CurrentMovingSpeed; }
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
-	void SetMovingSpeed(float NewSpeed) { CurrentMovingSpeed = NewSpeed; }
+	void SetMovingSpeed(float NewSpeed);
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
 	int32 GetDamageAmount() const { return DamageAmount; }
@@ -58,7 +58,10 @@ public:
 	ABGConveyorBase* GetAttachedConveyor() const { return AttachedConveyor; }
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
-	void SetAttachedConveyor(ABGConveyorBase* NewConveyor);
+	const int32 GetAttachedConveyorId() const { return AttachedConveyorId; }
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
+	void SetAttachedConveyor(ABGConveyorBase* NewConveyor, bool ResetPosition);
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
 	void ToggleMovement(bool EnableOrNot);
@@ -82,6 +85,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class USphereComponent* TriggerComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class UWidgetComponent* IndicatorWidget;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Bomb")
 	int32 AttachedConveyorId;
@@ -109,6 +115,12 @@ protected:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Bomb Game|Bomb")
 	void PostBombExploded();
 
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
+	void ToggleVisibilityAndCollision(bool EnableOrNot);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Bomb Game|Bomb")
+	void K2_ToggleVisibilityAndCollision(bool EnableOrNot);
+
 private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Bomb")
@@ -130,4 +142,6 @@ private:
 	TObjectPtr<class ABGConveyorBase> AttachedConveyor;
 
 	void RecalculateTargetPosition();
+
+	float MaxMovingSpeed;
 };

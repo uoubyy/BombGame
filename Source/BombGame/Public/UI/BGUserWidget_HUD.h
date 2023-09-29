@@ -85,7 +85,7 @@ protected:
 	//--------------------------------------------------
 
 	UFUNCTION()
-	void OnTeamScoreChanged(int32 LeftTeamScore, int32 RightTeamScore);
+	void OnTeamHealthChanged(int32 LeftTeamHealth, int32 RightTeamHealth);
 
 	UFUNCTION()
 	void OnGameStateChanged(const EGameState NewGameState);
