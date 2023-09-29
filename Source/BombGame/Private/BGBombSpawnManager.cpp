@@ -203,6 +203,12 @@ ABGBombBase* ABGBombSpawnManager::RequestSpawnNewBombByType(int32 ConveyorId, TS
 	{
 		// TODO: Init Speed
 		float InitSpeed = FMath::RandRange(MinInitSpeed, MaxInitSpeed);
+		// set child bomb speed to be equal to parent bomb speed
+		for (auto& BombInfo : AllActiveBombs) {
+			if (BombInfo.Value->GetAttachedConveyor()->GetConveyorId() == ConveyorId) {
+				InitSpeed = BombInfo.Value->GetMovingSpeed();
+			}
+		}
 		NewBomb->InitBomb(BombUniqueId, InitSpeed, ConveyorRef->GetCurrentMovingDirection(), ConveyorRef);
 
 		NewBomb->OnBombExplodedDelegate.AddDynamic(this, &ThisClass::OnBombDestroyed);
