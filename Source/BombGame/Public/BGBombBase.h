@@ -58,6 +58,9 @@ public:
 	ABGConveyorBase* GetAttachedConveyor() const { return AttachedConveyor; }
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
+	void SetAttachedConveyor(ABGConveyorBase* NewConveyor);
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
 	void ToggleMovement(bool EnableOrNot);
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")

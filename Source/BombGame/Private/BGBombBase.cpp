@@ -78,15 +78,9 @@ void ABGBombBase::InitBomb(int32 BombId, float InitSpeed, EConveyorDirection Ini
 
 	CurrentMovingSpeed = InitSpeed;
 	CurrentMovingDirection = InitMovingDirection;
-
-	AttachedConveyor = ParentConveyor;
-	AttachedConveyorId = AttachedConveyor->GetConveyorId();
+	SetAttachedConveyor(ParentConveyor);
 
 	BombStatus = EBombStatus::BS_Moving;
-
-	RecalculateTargetPosition();
-
-	AttachedConveyor->OnConveyorDirectionChanged.AddDynamic(this, &ThisClass::OnConveyorDirectionChanged);
 }
 
 void ABGBombBase::ReverseMovingDirection()
@@ -103,6 +97,17 @@ void ABGBombBase::OnConveyorDirectionChanged(EConveyorDirection NewDirection)
 {
 	CurrentMovingDirection = NewDirection;
 	RecalculateTargetPosition();
+}
+
+void ABGBombBase::SetAttachedConveyor(ABGConveyorBase* NewConveyor)
+{
+	AttachedConveyor = NewConveyor;
+	AttachedConveyorId = AttachedConveyor->GetConveyorId();
+
+	AttachedConveyor->OnConveyorDirectionChanged.AddDynamic(this, &ThisClass::OnConveyorDirectionChanged);
+
+	RecalculateTargetPosition();
+	ToggleMovement(true);
 }
 
 void ABGBombBase::ToggleMovement(bool EnableOrNot)

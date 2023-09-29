@@ -112,12 +112,11 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 						BombTwo = It.Value();
 					}
 				}
-
-				// TODO: Bind Delegate
-
-				// TODO: Update Bomb's conveyor reference 
-
-				K2_OnRandomEventLaneSwitch(BombOne, BombTwo);
+				
+				if(BombOne && BombTwo)
+				{ 
+					K2_OnRandomEventLaneSwitch(BombOne, BombTwo);
+				}
 			}
 
 			break;
@@ -273,4 +272,23 @@ void ABGBombSpawnManager::OnBombDestroyed(const EConveyorDirection MovingDirecti
 	GameModeRef->ApplyDamage(TargetTeam, AllActiveBombs[BombId]->GetDamageAmount());
 
 	AllActiveBombs.Remove(BombId);
+}
+
+void ABGBombSpawnManager::PostSwitchLane(ABGBombBase* BombOne, ABGBombBase* BombTwo)
+{
+	if (BombOne && BombTwo)
+	{
+		ABGConveyorBase* ConveyorOfBombOne = BombOne->GetAttachedConveyor();
+		ABGConveyorBase* ConveyorOfBombTwo = BombTwo->GetAttachedConveyor();
+
+		ConveyorOfBombOne->OnConveyorDirectionChanged.RemoveDynamic(BombOne, &ABGBombBase::OnConveyorDirectionChanged);
+		ConveyorOfBombTwo->OnConveyorDirectionChanged.RemoveDynamic(BombTwo, &ABGBombBase::OnConveyorDirectionChanged);
+
+		BombOne->SetAttachedConveyor(ConveyorOfBombTwo);
+		BombTwo->SetAttachedConveyor(ConveyorOfBombOne);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PostSwitchLane with Invalid Bomb!"));
+	}
 }

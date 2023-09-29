@@ -55,6 +55,9 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Bomb Game|Spawn Manager")
 	void K2_OnRandomEventLaneSwitch(ABGBombBase* BombOne, ABGBombBase* BombTwo);
 
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
+	void PostSwitchLane(ABGBombBase* BombOne, ABGBombBase* BombTwo);
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Spawn Manager")
 	TArray<TSubclassOf<class ABGBombBase>> AllBombTypeClass;
@@ -66,7 +69,7 @@ private:
 	float MaxInitSpeed = 500.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Spawn Manager")
-	float BoostRate;
+	float BoostRate = 1.5f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Spawn Manager")
 	TMap<int32, class ABGConveyorBase*> AllConveyors;
