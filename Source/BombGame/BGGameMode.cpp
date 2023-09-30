@@ -164,7 +164,10 @@ void ABGGameMode::ReadyCountDown()
 {
 	SetGameState(EGameState::GS_Start);
 
-
+	GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([this]()
+	{	
+		this->SetGameState(EGameState::GS_InProgress);
+	}));
 }
 
 EGameState ABGGameMode::GetGameState()
