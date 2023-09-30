@@ -130,7 +130,19 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 			case ERandomEventType::RET_AddBomb:
 				for (auto ConveyorInfo : AllConveyors) {
 					if (ConveyorInfo.Value) {
-						ABGBombBase* NewBomb = RequestSpawnNewBombByType(ConveyorInfo.Value->GetConveyorId(), RandomEvent.ChildBombClass);
+						TSubclassOf<class ABGBombBase> ChildBombClass;
+						for (auto& BombInfo : AllActiveBombs) {
+							if (BombInfo.Value->GetAttachedConveyor()->GetConveyorId() == ConveyorInfo.Value->GetConveyorId()) {
+								if (BombInfo.Value->GetDamageAmount() > 0){ // don't add another damage bomb if there is already one on the conveyor
+									ChildBombClass = RandomEvent.ChildBombClass;
+								}else{
+									int32 BombTypeCnt = AllBombTypeClass.Num();
+									int32 NewBombTypeIndex = FMath::RandRange(0, BombTypeCnt - 1);
+									ChildBombClass = AllBombTypeClass[NewBombTypeIndex];
+								}
+							}
+						}
+						ABGBombBase* NewBomb = RequestSpawnNewBombByType(ConveyorInfo.Value->GetConveyorId(), ChildBombClass);
 						NewBomb->SetBombType(EBombType::BT_Child);
 					}
 				}
