@@ -14,6 +14,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameStateChangedDelegate, const EGameState, NewGameState);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnTeamHealthChangedDelegate, int32, LeftTeamHealth, int32, RightTeamHealth);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnTeamScoreChangedDelegate, ETeamId, TargetTeam, int32, NewScore, int32, DeltaValue);
 
 UCLASS(minimalapi)
 class ABGGameMode : public AGameModeBase
@@ -52,6 +53,9 @@ public:
 	void ApplyDamage(ETeamId TargetTeam, int32 DamageAmount);
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
+	void AddRewards(ETeamId TargetTeam, int32 RewardAmount);
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
 	class ABGBombSpawnManager* GetBombSpawnManager();
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
@@ -63,7 +67,7 @@ public:
 
 	// Ready start countdown time
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
-	float ReadyCountDownTime;
+	float ReadyCountDownTime = 3.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
 	int PlayerNums = 4;
@@ -73,6 +77,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Bomb Game|Game Mode")
 	FOnTeamHealthChangedDelegate OnTeamHealthChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = "Bomb Game|Game Mode")
+	FOnTeamScoreChangedDelegate OnTeamScoreChanged;
 
 protected:
 	// Called when the game starts or when spawned
@@ -84,6 +91,9 @@ private:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Game Mode")
 	TMap<ETeamId, int32> TeamsHealthPoints;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Game Mode")
+	TMap<ETeamId, int32> TeamsScore;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Game Mode")
 	TMap<FName, TObjectPtr<class APlayerStart>> AllStartPoints;

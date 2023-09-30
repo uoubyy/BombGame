@@ -72,6 +72,9 @@ void ABGGameMode::StartPlay()
 
 	TeamsHealthPoints.Add({ ETeamId::TI_Left, MaxHealthPoints });
 	TeamsHealthPoints.Add({ ETeamId::TI_Right, MaxHealthPoints });
+
+	TeamsScore.Add({ ETeamId::TI_Left, 0 });
+	TeamsScore.Add({ ETeamId::TI_Right, 0 });
 }
 
 APlayerController* ABGGameMode::Login(UPlayer* NewPlayer, ENetRole InRemoteRole, const FString& Portal, const FString& Options, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
@@ -153,13 +156,18 @@ void ABGGameMode::UpdateReadyPlayers()
 	{
 		SetGameState(EGameState::GS_Ready);
 
-		GetWorldTimerManager().SetTimer(ReadyCountdownTimerHandle, this, &ABGGameMode::ReadyCountDown, 0, false, ReadyCountDownTime);
+		GetWorldTimerManager().SetTimer(ReadyCountdownTimerHandle, this, &ABGGameMode::ReadyCountDown, ReadyCountDownTime, false, 0);
 	}
 }
 
 void ABGGameMode::ReadyCountDown()
 {
 	SetGameState(EGameState::GS_Start);
+
+	GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([this]()
+	{	
+		this->SetGameState(EGameState::GS_InProgress);
+	}));
 }
 
 EGameState ABGGameMode::GetGameState()
@@ -183,6 +191,13 @@ void ABGGameMode::ApplyDamage(ETeamId TargetTeam, int32 DamageAmount)
 	}
 
 	OnTeamHealthChanged.Broadcast(TeamsHealthPoints[ETeamId::TI_Left], TeamsHealthPoints[ETeamId::TI_Right]);
+}
+
+void ABGGameMode::AddRewards(ETeamId TargetTeam, int32 RewardAmount)
+{
+	TeamsScore[TargetTeam] += RewardAmount;
+
+	OnTeamScoreChanged.Broadcast(TargetTeam, TeamsScore[TargetTeam], RewardAmount);
 }
 
 ABGBombSpawnManager* ABGGameMode::GetBombSpawnManager()

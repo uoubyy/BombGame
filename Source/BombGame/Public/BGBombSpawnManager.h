@@ -64,6 +64,11 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Spawn Manager")
 	void PostBlackHole();
 
+	UFUNCTION()
+	void OnGameStateChanged(const EGameState NewGameState);
+
+	const bool IsGameInProgress() const { return CurrentGameState == EGameState::GS_Start || CurrentGameState == EGameState::GS_InProgress; }
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Spawn Manager")
 	TArray<TSubclassOf<class ABGBombBase>> AllBombTypeClass;
@@ -92,6 +97,8 @@ private:
 	class ABGBombBase* SpawnNewBombHelper(int32 ConveyorId, TSubclassOf<class ABGBombBase> BombClass, class ABGConveyorBase* ParentConveyor);
 
 	float ElapsedTime;
+
+	EGameState CurrentGameState = EGameState::GS_Idle;
 
 	// TODO: Do not modify
 	int32 BombUniqueId = 1;

@@ -5,6 +5,7 @@
 #include "../BGGameMode.h"
 #include "BGBombSpawnManager.h"
 #include "Components/Image.h"
+#include "Components/TextBlock.h"
 
 bool UBGUserWidget_HUD::Initialize()
 {
@@ -14,6 +15,7 @@ bool UBGUserWidget_HUD::Initialize()
 	{
 		BGGameMod->OnTeamHealthChanged.AddDynamic(this, &ThisClass::OnTeamHealthChanged);
 		BGGameMod->OnGameStateChanged.AddDynamic(this, &ThisClass::OnGameStateChanged);
+		BGGameMod->OnTeamScoreChanged.AddDynamic(this, &ThisClass::OnTeamScoreChanged);
 
 		BGGameMod->GetBombSpawnManager()->OnRandomEventActivated.AddDynamic(this, &ThisClass::OnRandomEventActivated);
 	}
@@ -59,6 +61,18 @@ void UBGUserWidget_HUD::OnTeamHealthChanged(int32 LeftTeamHealth, int32 RightTea
 	for (int32 Index = 7; Index >= RightTeamHealth; --Index)
 	{
 		RightTeamPoints[Index]->SetVisibility(ESlateVisibility::Collapsed);
+	}
+}
+
+void UBGUserWidget_HUD::OnTeamScoreChanged(ETeamId TargetTeam, int32 NewScore, int32 DeltaScore)
+{
+	if (TargetTeam == ETeamId::TI_Left)
+	{
+		Text_LeftTeamScore->SetText(FText::AsNumber(NewScore));
+	}
+	else
+	{
+		Text_RightTeamScore->SetText(FText::AsNumber(NewScore));
 	}
 }
 

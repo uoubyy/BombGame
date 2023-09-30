@@ -39,11 +39,12 @@ enum class EConveyorDirection : uint8
 UENUM(BlueprintType)
 enum class EGameState : uint8
 {
-	GS_Idle		UMETA(DisplayName = "Idle"),
-	GS_Ready	UMETA(DisplayName = "Ready"),
-	GS_Start	UMETA(DisplayName = "Start"),
-	GS_End	    UMETA(DisplayName = "End"),
-	Count		UMETA(Hidden)
+	GS_Idle			UMETA(DisplayName = "Idle"),
+	GS_Ready		UMETA(DisplayName = "Ready"),
+	GS_Start		UMETA(DisplayName = "Start"),
+	GS_InProgress	UMETA(DisplayName = "In Progress"),
+	GS_End			UMETA(DisplayName = "End"),
+	Count			UMETA(Hidden)
 };
 
 UENUM(BlueprintType)
