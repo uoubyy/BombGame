@@ -36,14 +36,18 @@ void ABGBombSpawnManager::BeginPlay()
 		}
 	}
 
-	SpawnBombForAllConveyors();
-
 	GameModeRef = Cast<ABGGameMode>(GetWorld()->GetAuthGameMode());
+	GameModeRef->OnGameStateChanged.AddDynamic(this, &ThisClass::OnGameStateChanged);
 }
 
 void ABGBombSpawnManager::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	if (!IsGameInProgress())
+	{
+		return;
+	}
 
 	ElapsedTime += DeltaSeconds;
 	for (auto& RandomEvent : AllRandomEvents)
@@ -154,6 +158,11 @@ void ABGBombSpawnManager::PostInitializeComponents()
 
 ABGBombBase* ABGBombSpawnManager::RequestSpawnNewBomb(int32 ConveyorId)
 {
+	if (!IsGameInProgress())
+	{
+		return nullptr;
+	}
+
 	ensureMsgf(AllConveyors.Contains(ConveyorId), TEXT("Request to Spawn New Bomb at the invalid conveyor %d"), ConveyorId);
 
 	int32 BombTypeCnt = AllBombTypeClass.Num();
@@ -169,6 +178,11 @@ ABGBombBase* ABGBombSpawnManager::RequestSpawnNewBomb(int32 ConveyorId)
 
 ABGBombBase* ABGBombSpawnManager::RequestSpawnNewBombByType(int32 ConveyorId, TSubclassOf<class ABGBombBase> BombClass)
 {
+	if (!IsGameInProgress())
+	{
+		return nullptr;
+	}
+
 	ensureMsgf(AllConveyors.Contains(ConveyorId), TEXT("Request to Spawn New Bomb at the invalid conveyor %d"), ConveyorId);
 	UE_LOG(LogTemp, Warning, TEXT("Conveyor %i request to spawn another bomb"), ConveyorId);
 	int32 BombTypeCnt = AllBombTypeClass.Num();
@@ -285,8 +299,13 @@ void ABGBombSpawnManager::OnBombDestroyed(const EConveyorDirection MovingDirecti
 	}
 
 	ETeamId TargetTeam = AllActiveBombs[BombId]->GetMovingDirection() == EConveyorDirection::CD_Left ? ETeamId::TI_Left : ETeamId::TI_Right;
+	ETeamId InstigatorTeam = AllActiveBombs[BombId]->GetMovingDirection() == EConveyorDirection::CD_Left ? ETeamId::TI_Right : ETeamId::TI_Left;
 
-	GameModeRef->ApplyDamage(TargetTeam, AllActiveBombs[BombId]->GetDamageAmount());
+	if(IsGameInProgress())
+	{ 
+		GameModeRef->ApplyDamage(TargetTeam, AllActiveBombs[BombId]->GetDamageAmount());
+		GameModeRef->AddRewards(InstigatorTeam, AllActiveBombs[BombId]->GetRewardAmount());
+	}
 
 	AllActiveBombs.Remove(BombId);
 }
@@ -334,5 +353,15 @@ void ABGBombSpawnManager::PostBlackHole()
 	{
 		ABGConveyorBase* NewConveyor = AllConveyors[CurrentConveyorsId[Index]];
 		It.Value()->SetAttachedConveyor(NewConveyor, true);
+	}
+}
+
+void ABGBombSpawnManager::OnGameStateChanged(const EGameState NewGameState)
+{
+	CurrentGameState = NewGameState;
+
+	if (CurrentGameState == EGameState::GS_Start)
+	{
+		SpawnBombForAllConveyors();
 	}
 }

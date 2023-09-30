@@ -82,10 +82,19 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	float ElapsedTime;
 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Text_LeftTeamScore;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Text_RightTeamScore;
+
 	//--------------------------------------------------
 
 	UFUNCTION()
 	void OnTeamHealthChanged(int32 LeftTeamHealth, int32 RightTeamHealth);
+
+	UFUNCTION()
+	void OnTeamScoreChanged(ETeamId TargetTeam, int32 NewScore, int32 DeltaScore);
 
 	UFUNCTION()
 	void OnGameStateChanged(const EGameState NewGameState);

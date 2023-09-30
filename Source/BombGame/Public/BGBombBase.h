@@ -55,6 +55,9 @@ public:
 	int32 GetDamageAmount() const { return DamageAmount; }
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
+	int32 GetRewardAmount() const { return RewardAmount; }
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
 	ABGConveyorBase* GetAttachedConveyor() const { return AttachedConveyor; }
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
@@ -124,7 +127,10 @@ protected:
 private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Bomb")
-	int32 DamageAmount;
+	int32 DamageAmount = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Bomb")
+	int32 RewardAmount = 5;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Bomb")
 	EBombStatus BombStatus;
