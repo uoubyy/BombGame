@@ -115,12 +115,13 @@ void ABGGameMode::BeginPlay()
 APawn* ABGGameMode::SpawnDefaultPawnFor_Implementation(AController* NewPlayer, AActor* StartSpot)
 {
 	int32 ControllerId = 0;
+	FString PlayerTag = "P0";
 	if (APlayerController* PlayerController = Cast<APlayerController>(NewPlayer))
 	{
 		ControllerId = UGameplayStatics::GetPlayerControllerID(PlayerController);
-		FString TargetPoint = FString::Printf(TEXT("P%d"), ControllerId);
+		PlayerTag = FString::Printf(TEXT("P%d"), ControllerId);
 
-		StartSpot = AllStartPoints[FName(TargetPoint)];
+		StartSpot = AllStartPoints[FName(PlayerTag)];
 	}
 
 	APawn* NewPawn = Super::SpawnDefaultPawnFor_Implementation(NewPlayer, StartSpot);
@@ -131,6 +132,11 @@ APawn* ABGGameMode::SpawnDefaultPawnFor_Implementation(AController* NewPlayer, A
 	else
 	{
 		NewPawn->Tags.Add("RightTeam");
+	}
+
+	if (ABGCharacter* NewCharacter = Cast<ABGCharacter>(NewPawn))
+	{
+		NewCharacter->SetPlayerId(PlayerTag);
 	}
 
 	return NewPawn;
@@ -152,7 +158,7 @@ void ABGGameMode::UpdateReadyPlayers()
 	ReadyPlayers++;
 	UE_LOG(LogTemp, Warning, TEXT("Current readyPlayer : %d"), ReadyPlayers);
 
-	if (ReadyPlayers == PlayerNums)
+	if (IsDebugMode || ReadyPlayers == PlayerNums)
 	{
 		SetGameState(EGameState::GS_Ready);
 

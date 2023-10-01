@@ -23,7 +23,7 @@ public:
 	void OnCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit);
 
 	UFUNCTION(BlueprintCallable)
-	void SetPlayerId(int32 NewPlayerId);
+	void SetPlayerId(FString NewPlayerId);
 
 private:
 
@@ -33,6 +33,6 @@ private:
 protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = BombGame, meta = (AllowPrivateAccess = "true"))
-	int32 PlayerId = 0;
+	FString PlayerId;
 };
 

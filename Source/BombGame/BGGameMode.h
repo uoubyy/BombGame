@@ -61,6 +61,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
 	int32 GetTeamHealthPoints(ETeamId TargetTeam);
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
+	bool IsDebugMode = false;
+
 	// Total countdown time
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
 	float CountdownTime;

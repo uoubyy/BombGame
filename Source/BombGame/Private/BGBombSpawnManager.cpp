@@ -221,8 +221,10 @@ class ABGBombBase* ABGBombSpawnManager::SpawnNewBombHelper(int32 ConveyorId, TSu
 	{
 		float InitSpeed = FMath::RandRange(MinInitSpeed, MaxInitSpeed);
 		// Set child bomb speed to be equal to parent bomb speed
-		for (auto& BombInfo : AllActiveBombs) {
-			if (BombInfo.Value->GetAttachedConveyor()->GetConveyorId() == ConveyorId) {
+		for (auto& BombInfo : AllActiveBombs)
+		{
+			if (BombInfo.Value->GetAttachedConveyor()->GetConveyorId() == ConveyorId)
+			{
 				InitSpeed = BombInfo.Value->GetMovingSpeed();
 
 				// Clamp InitSpped to MinInitSpeed and MaxInitSpeed 
@@ -297,9 +299,10 @@ void ABGBombSpawnManager::SpawnBombForAllConveyors()
 
 void ABGBombSpawnManager::OnBombDestroyed(const EConveyorDirection MovingDirection, const int32 ConveyorId, const int32 DamageAmount, const int32 BombId)
 {
-	UE_LOG(LogTemp, Warning, TEXT("BombSpawnManager OnBombDestroyed %d"), BombId);
+	// UE_LOG(LogTemp, Warning, TEXT("BombSpawnManager OnBombDestroyed %d"), BombId);
 	if (!AllActiveBombs.Contains(BombId))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("BombSpawnManager OnBombDestroyed: failed to find bomb with id %d"), BombId);
 		return;
 	}
 	// ensureMsgf(AllActiveBombs.Contains(BombId), TEXT("OnBombDestroyed with Invalid Id %d"), BombId);
@@ -375,5 +378,12 @@ void ABGBombSpawnManager::OnGameStateChanged(const EGameState NewGameState)
 	if (CurrentGameState == EGameState::GS_Start)
 	{
 		SpawnBombForAllConveyors();
+	}
+	else if (CurrentGameState == EGameState::GS_End)
+	{
+		for (auto& BombInfo : AllActiveBombs)
+		{
+			BombInfo.Value->ToggleMovement(false);
+		}
 	}
 }

@@ -189,7 +189,7 @@ void ABGBombBase::RotateMovingToPoint(FVector TargetCenter, float DeltaSeconds, 
 
 void ABGBombBase::OnTriggerBeginOverlap_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ABGBombBase %s id %d OnTriggerBeginOverlap with %s."), *GetName(), BombUniqueId, *OtherActor->GetName());
+	// UE_LOG(LogTemp, Warning, TEXT("ABGBombBase %s id %d OnTriggerBeginOverlap with %s."), *GetName(), BombUniqueId, *OtherActor->GetName());
 
 	OnBombExploded();
 }

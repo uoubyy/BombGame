@@ -61,8 +61,15 @@ void ABGConveyorBase::SetCurrentMovingDirection(EConveyorDirection NewDirection)
 
 void ABGConveyorBase::OnConveyorTapped(class ABGCharacter* SourcePlayer)
 {
-	LastPressedTeam = SourcePlayer->GetPlayerState<ABGPlayerState>()->GetPlayerTeamId();
-	UpdateDirectionBasedOnTeam();
+	ABGPlayerState* BGPlayerState = SourcePlayer->GetPlayerState<ABGPlayerState>();
+	
+	ETeamId NewTeamId = SourcePlayer->GetPlayerState<ABGPlayerState>()->GetPlayerTeamId();
+	if(NewTeamId != LastPressedTeam)
+	{ 
+		BGPlayerState->OnTapSucceed();
+		LastPressedTeam = SourcePlayer->GetPlayerState<ABGPlayerState>()->GetPlayerTeamId();
+		UpdateDirectionBasedOnTeam();
+	}
 }
 
 void ABGConveyorBase::ReverseMovingDirection()
