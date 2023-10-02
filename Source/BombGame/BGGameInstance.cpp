@@ -7,6 +7,7 @@ void UBGGameInstance::SetTeamName(const ETeamId TargetTeam, const FString& InTea
 {
 	FString& TeamName = TeamNames.FindOrAdd(TargetTeam);
 	TeamName = InTeamName;
+	UE_LOG(LogTemp, Warning, TEXT("Set Team Name: %s"), *InTeamName);
 }
 
 const FString UBGGameInstance::GetTeamName(const ETeamId TargetTeam)
