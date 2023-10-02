@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "../BGGameplayEnum.h"
 #include "BGUserWidget_GameStatistics.generated.h"
 
 /**
@@ -21,6 +22,18 @@ protected:
 	virtual bool Initialize() override;
 
 protected:
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Text_RightTeamName;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Text_LeftTeamName;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UImage> Image_LeftTeamVictory;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UImage> Image_RightTeamVictory;
 	
 	UPROPERTY(BlueprintReadOnly)
 	TMap<FString, class UTextBlock*> Text_PlayerName;
@@ -39,6 +52,9 @@ protected:
 	int32 MPVScore = 0;
 
 public:
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateMatchResult(const FString& LeftTeamName, const FString& RightTeamName, const ETeamId WinnerTeam);
 
 	UFUNCTION(BlueprintCallable)
 	void UpdatePlayerStatisticInfo(FString TargetPlayer, FString PlayerName, int32 TapCnt, int32 FrozenCnt, int32 StunCnt);
