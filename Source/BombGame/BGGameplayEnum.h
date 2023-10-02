@@ -92,3 +92,27 @@ struct FRandomEventInfo
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Random Event")
 	TSubclassOf<class ABGBombBase> ChildBombClass;
 };
+
+USTRUCT(BlueprintType)
+struct FRecordDetail
+{
+	GENERATED_BODY()
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Record Detail")
+	FString TeamName;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Record Detail")
+	int32 TeamScore;
+
+	FRecordDetail() 
+		: TeamName("")
+		, TeamScore(0)
+	{
+	}
+
+	FRecordDetail(const FString& InTeamName, int32 InTeamScore)
+		: TeamName(InTeamName)
+		, TeamScore(InTeamScore)
+	{
+	}
+};
