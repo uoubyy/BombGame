@@ -40,5 +40,5 @@ private:
 
 	FTimerHandle BoostDurationTimerHandler;
 	EBombType BombType;
-	TArray<ABGBombBase*> AllBombs;
+/*	TArray<ABGBombBase*> AllBombs;*/
 };
