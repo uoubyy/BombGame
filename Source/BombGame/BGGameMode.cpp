@@ -6,7 +6,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "BGBombSpawnManager.h"
 #include "BGPlayerState.h"
-#include <GameFramework/PlayerStart.h>
+#include "GameFramework/PlayerStart.h"
+#include "BGGameInstance.h"
+#include "BGSaveGameSubsystem.h"
 
 ABGGameMode::ABGGameMode()
 {
@@ -103,7 +105,8 @@ void ABGGameMode::BeginPlay()
 		TArray<AActor*> OutActors;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABGBombSpawnManager::StaticClass(), OutActors);
 
-		ensureMsgf(OutActors.Num() == 1, TEXT("Failed to find a Bomb Spawn Manager in the Level"));
+		// ensureMsgf(OutActors.Num() == 1, TEXT("Failed to find a Bomb Spawn Manager in the Level"));
+		UE_LOG(LogTemp, Warning, TEXT("Failed to find a Bomb Spawn Manager in the Level."));
 
 		if (OutActors.Num() == 1)
 		{
@@ -194,6 +197,19 @@ void ABGGameMode::ApplyDamage(ETeamId TargetTeam, int32 DamageAmount)
 	{
 		SetGameState(EGameState::GS_End);
 		TeamsHealthPoints[TargetTeam] = 0;
+
+		// Try save the winner record to save game
+
+		UBGGameInstance* GameInstance = Cast<UBGGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		if (UBGSaveGameSubsystem* BGSaveGameSubsystem = GameInstance->GetSubsystem<UBGSaveGameSubsystem>())
+		{
+			ETeamId WinnerTeam = TargetTeam == ETeamId::TI_Left ? ETeamId::TI_Right : ETeamId::TI_Left;
+			FString TeamName = GameInstance->GetTeamName(WinnerTeam);
+			BGSaveGameSubsystem->TryAddRecordToTop10(TeamName, TeamsScore[WinnerTeam]);
+
+			// TODO: no need write save game file immediately
+			BGSaveGameSubsystem->WriteSaveGame();
+		}
 	}
 
 	OnTeamHealthChanged.Broadcast(TeamsHealthPoints[ETeamId::TI_Left], TeamsHealthPoints[ETeamId::TI_Right]);

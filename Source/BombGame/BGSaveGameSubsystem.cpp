@@ -16,12 +16,6 @@ void UBGSaveGameSubsystem::SetSlotName(FString NewSlotName)
 
 void UBGSaveGameSubsystem::WriteSaveGame()
 {
-	//ABGG* DRGameState = GetWorld()->GetGameState();
-	//if (!DRGameState)
-	//{
-	//	return;
-	//}
-
 	if (!UGameplayStatics::SaveGameToSlot(CurrentSaveGame, CurrentSlotName, 0))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Try to WriteSaveGame Failed"));
@@ -54,4 +48,13 @@ class UBGSaveGame* UBGSaveGameSubsystem::GetTop10Records()
 	}
 
 	return CurrentSaveGame;
+}
+
+bool UBGSaveGameSubsystem::TryAddRecordToTop10(const FString& TeamName, const int32 TeamScore)
+{
+	UE_LOG(LogTemp, Warning, TEXT("TryAddRecordToTop10 %s %d"), *TeamName, TeamScore);
+	// In case no save game loaded or created
+	GetTop10Records();
+	
+	return CurrentSaveGame->TryAddRecordToTop10(FRecordDetail(TeamName, TeamScore));
 }

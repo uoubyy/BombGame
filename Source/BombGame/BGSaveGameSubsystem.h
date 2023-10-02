@@ -23,14 +23,17 @@ protected:
 
 public:
 	
-	UFUNCTION(BlueprintCallable, Category = "Bomb Game|SaveGame")
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|SaveGameSystem")
 	void SetSlotName(FString NewSlotName);
 
-	UFUNCTION(BlueprintCallable, Category = "Bomb Game|SaveGame")
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|SaveGameSystem")
 	void WriteSaveGame();
 
 	void LoadSaveGame(FString InSlotName = "");
 
-	UFUNCTION(BlueprintCallable, Category = "Bomb Game|SaveGame")
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|SaveGameSystem")
 	class UBGSaveGame* GetTop10Records();
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|SaveGameSystem")
+	bool TryAddRecordToTop10(const FString& TeamName, const int32 TeamScore);
 };
