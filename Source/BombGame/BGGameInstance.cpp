@@ -11,6 +11,7 @@ void UBGGameInstance::SetTeamName(const ETeamId TargetTeam, const FString& InTea
 
 const FString UBGGameInstance::GetTeamName(const ETeamId TargetTeam)
 {
-	FString& TeamName = TeamNames.FindOrAdd(TargetTeam);
+	FString DefaultTeamName = TargetTeam == ETeamId::TI_Left ? "AAA" : "BBB";
+	FString& TeamName = TeamNames.FindOrAdd(TargetTeam, DefaultTeamName);
 	return TeamName;
 }

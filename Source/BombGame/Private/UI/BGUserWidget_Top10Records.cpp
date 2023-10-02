@@ -17,7 +17,10 @@ bool UBGUserWidget_Top10Records::Initialize()
 		for(int Id = 0; Id < 10; ++Id)
 		{ 
 			FString WidgetName = FString::Printf(TEXT("WBP_RecordItem%d"), Id);
-
+			if (WidgetTree->FindWidget(FName(WidgetName)))
+			{
+				UE_LOG(LogTemp, Warning, TEXT(""));
+			}
 			if (UBGUserWidget_RecordItem* RecordWidget = Cast<UBGUserWidget_RecordItem>(WidgetTree->FindWidget(FName(WidgetName))))
 			{
 				Top10Records.Add(RecordWidget);
