@@ -37,10 +37,16 @@ UCLASS()
 class BOMBGAME_API UBGSaveGame : public USaveGame
 {
 	GENERATED_BODY()
+
+private:
+	int32 MaxRecordCnt = 10;
 	
 public:
 	UBGSaveGame();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bomb Game|SaveGame")
 	TMap<int32, FRecordDetail> Top10Records;
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|SaveGame")
+	bool TryAddRecordToTop10(const FRecordDetail& RecordDetail);
 };
