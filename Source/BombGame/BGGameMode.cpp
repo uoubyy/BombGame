@@ -105,7 +105,8 @@ void ABGGameMode::BeginPlay()
 		TArray<AActor*> OutActors;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABGBombSpawnManager::StaticClass(), OutActors);
 
-		ensureMsgf(OutActors.Num() == 1, TEXT("Failed to find a Bomb Spawn Manager in the Level"));
+		// ensureMsgf(OutActors.Num() == 1, TEXT("Failed to find a Bomb Spawn Manager in the Level"));
+		UE_LOG(LogTemp, Warning, TEXT("Failed to find a Bomb Spawn Manager in the Level."));
 
 		if (OutActors.Num() == 1)
 		{

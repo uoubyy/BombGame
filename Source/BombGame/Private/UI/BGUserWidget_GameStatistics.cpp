@@ -3,6 +3,7 @@
 
 #include "UI/BGUserWidget_GameStatistics.h"
 #include "Components/TextBlock.h"
+#include "Components/Image.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/CanvasPanelSlot.h"
 
@@ -52,6 +53,16 @@ bool UBGUserWidget_GameStatistics::Initialize()
 	}
 
 	return Result;
+}
+
+void UBGUserWidget_GameStatistics::UpdateMatchResult(const FString& LeftTeamName, const FString& RightTeamName, const ETeamId WinnerTeam)
+{
+	Text_LeftTeamName->SetText(FText::FromString(LeftTeamName));
+	Text_RightTeamName->SetText(FText::FromString(RightTeamName));
+
+	Image_LeftTeamVictory->SetVisibility(WinnerTeam == ETeamId::TI_Left ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
+
+	Image_RightTeamVictory->SetVisibility(WinnerTeam == ETeamId::TI_Right ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
 }
 
 void UBGUserWidget_GameStatistics::UpdatePlayerStatisticInfo(FString TargetPlayer, FString PlayerName, int32 TapCnt, int32 FrozenCnt, int32 StunCnt)

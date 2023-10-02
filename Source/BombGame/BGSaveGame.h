@@ -4,31 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "BGGameplayEnum.h"
 #include "BGSaveGame.generated.h"
-
-USTRUCT(BlueprintType)
-struct FRecordDetail
-{
-	GENERATED_BODY()
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Record Detail")
-	FString TeamName;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Record Detail")
-	int32 TeamScore;
-
-	FRecordDetail() 
-		: TeamName("")
-		, TeamScore(0)
-	{
-	}
-
-	FRecordDetail(const FString& InTeamName, int32 InTeamScore)
-		: TeamName(InTeamName)
-		, TeamScore(InTeamScore)
-	{
-	}
-};
 
 /**
  * 
