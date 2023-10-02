@@ -17,75 +17,36 @@ class BOMBGAME_API UBGUserWidget_HUD : public UUserWidget
 
 protected:
 
+	virtual void NativeConstruct() override;
+	
 	virtual bool Initialize() override;
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime);
 
 protected:
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<class UImage> LeftTeam_H1;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<class UImage> LeftTeam_H2;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<class UImage> LeftTeam_H3;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<class UImage> LeftTeam_H4;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<class UImage> LeftTeam_H5;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<class UImage> LeftTeam_H6;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<class UImage> LeftTeam_H7;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<class UImage> LeftTeam_H8;
-
-	//-------------------------------------------------
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<class UImage> RightTeam_H1;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<class UImage> RightTeam_H2;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<class UImage> RightTeam_H3;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<class UImage> RightTeam_H4;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<class UImage> RightTeam_H5;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<class UImage> RightTeam_H6;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<class UImage> RightTeam_H7;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<class UImage> RightTeam_H8;
-
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	TMap<int32, class UImage*> RightTeamPoints;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	TMap<int32, class UImage*> LeftTeamPoints;
 
 	UPROPERTY(BlueprintReadOnly)
 	float ElapsedTime;
 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Text_LeftTeamScore;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Text_RightTeamScore;
+
 	//--------------------------------------------------
 
 	UFUNCTION()
-	void OnTeamScoreChanged(int32 LeftTeamScore, int32 RightTeamScore);
+	void OnTeamHealthChanged(int32 LeftTeamHealth, int32 RightTeamHealth);
+
+	UFUNCTION()
+	void OnTeamScoreChanged(ETeamId TargetTeam, int32 NewScore, int32 DeltaScore);
 
 	UFUNCTION()
 	void OnGameStateChanged(const EGameState NewGameState);

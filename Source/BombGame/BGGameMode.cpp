@@ -6,7 +6,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "BGBombSpawnManager.h"
 #include "BGPlayerState.h"
-#include <GameFramework/PlayerStart.h>
+#include "GameFramework/PlayerStart.h"
+#include "BGGameInstance.h"
+#include "BGSaveGameSubsystem.h"
 
 ABGGameMode::ABGGameMode()
 {
@@ -72,6 +74,9 @@ void ABGGameMode::StartPlay()
 
 	TeamsHealthPoints.Add({ ETeamId::TI_Left, MaxHealthPoints });
 	TeamsHealthPoints.Add({ ETeamId::TI_Right, MaxHealthPoints });
+
+	TeamsScore.Add({ ETeamId::TI_Left, 0 });
+	TeamsScore.Add({ ETeamId::TI_Right, 0 });
 }
 
 APlayerController* ABGGameMode::Login(UPlayer* NewPlayer, ENetRole InRemoteRole, const FString& Portal, const FString& Options, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
@@ -112,12 +117,13 @@ void ABGGameMode::BeginPlay()
 APawn* ABGGameMode::SpawnDefaultPawnFor_Implementation(AController* NewPlayer, AActor* StartSpot)
 {
 	int32 ControllerId = 0;
+	FString PlayerTag = "P0";
 	if (APlayerController* PlayerController = Cast<APlayerController>(NewPlayer))
 	{
 		ControllerId = UGameplayStatics::GetPlayerControllerID(PlayerController);
-		FString TargetPoint = FString::Printf(TEXT("P%d"), ControllerId);
+		PlayerTag = FString::Printf(TEXT("P%d"), ControllerId);
 
-		StartSpot = AllStartPoints[FName(TargetPoint)];
+		StartSpot = AllStartPoints[FName(PlayerTag)];
 	}
 
 	APawn* NewPawn = Super::SpawnDefaultPawnFor_Implementation(NewPlayer, StartSpot);
@@ -128,6 +134,11 @@ APawn* ABGGameMode::SpawnDefaultPawnFor_Implementation(AController* NewPlayer, A
 	else
 	{
 		NewPawn->Tags.Add("RightTeam");
+	}
+
+	if (ABGCharacter* NewCharacter = Cast<ABGCharacter>(NewPawn))
+	{
+		NewCharacter->SetPlayerId(PlayerTag);
 	}
 
 	return NewPawn;
@@ -149,17 +160,22 @@ void ABGGameMode::UpdateReadyPlayers()
 	ReadyPlayers++;
 	UE_LOG(LogTemp, Warning, TEXT("Current readyPlayer : %d"), ReadyPlayers);
 
-	if (ReadyPlayers == PlayerNums)
+	if (IsDebugMode || ReadyPlayers == PlayerNums)
 	{
 		SetGameState(EGameState::GS_Ready);
 
-		GetWorldTimerManager().SetTimer(ReadyCountdownTimerHandle, this, &ABGGameMode::ReadyCountDown, 0, false, ReadyCountDownTime);
+		GetWorldTimerManager().SetTimer(ReadyCountdownTimerHandle, this, &ABGGameMode::ReadyCountDown, ReadyCountDownTime, false, 0);
 	}
 }
 
 void ABGGameMode::ReadyCountDown()
 {
 	SetGameState(EGameState::GS_Start);
+
+	GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([this]()
+	{	
+		this->SetGameState(EGameState::GS_InProgress);
+	}));
 }
 
 EGameState ABGGameMode::GetGameState()
@@ -180,9 +196,29 @@ void ABGGameMode::ApplyDamage(ETeamId TargetTeam, int32 DamageAmount)
 	{
 		SetGameState(EGameState::GS_End);
 		TeamsHealthPoints[TargetTeam] = 0;
+
+		// Try save the winner record to save game
+
+		UBGGameInstance* GameInstance = Cast<UBGGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		if (UBGSaveGameSubsystem* BGSaveGameSubsystem = GameInstance->GetSubsystem<UBGSaveGameSubsystem>())
+		{
+			ETeamId WinnerTeam = TargetTeam == ETeamId::TI_Left ? ETeamId::TI_Right : ETeamId::TI_Left;
+			FString TeamName = GameInstance->GetTeamName(WinnerTeam);
+			BGSaveGameSubsystem->TryAddRecordToTop10(TeamName, TeamsScore[WinnerTeam]);
+
+			// TODO: no need write save game file immediately
+			BGSaveGameSubsystem->WriteSaveGame();
+		}
 	}
 
-	OnTeamScoreChanged.Broadcast(TeamsHealthPoints[ETeamId::TI_Left], TeamsHealthPoints[ETeamId::TI_Right]);
+	OnTeamHealthChanged.Broadcast(TeamsHealthPoints[ETeamId::TI_Left], TeamsHealthPoints[ETeamId::TI_Right]);
+}
+
+void ABGGameMode::AddRewards(ETeamId TargetTeam, int32 RewardAmount)
+{
+	TeamsScore[TargetTeam] += RewardAmount;
+
+	OnTeamScoreChanged.Broadcast(TargetTeam, TeamsScore[TargetTeam], RewardAmount);
 }
 
 ABGBombSpawnManager* ABGGameMode::GetBombSpawnManager()
@@ -190,7 +226,7 @@ ABGBombSpawnManager* ABGGameMode::GetBombSpawnManager()
 	return BombSpawnManager;
 }
 
-int32 ABGGameMode::GetTeamScore(ETeamId TargetTeam)
+int32 ABGGameMode::GetTeamHealthPoints(ETeamId TargetTeam)
 {
 	return TeamsHealthPoints[TargetTeam];
 }

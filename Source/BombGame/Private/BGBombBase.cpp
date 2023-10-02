@@ -84,6 +84,8 @@ void ABGBombBase::InitBomb(int32 BombId, float InitSpeed, EConveyorDirection Ini
 
 	CurrentMovingSpeed = InitSpeed;
 	CurrentMovingDirection = InitMovingDirection;
+	MaxMovingSpeed = InitSpeed * 2.0f;
+
 	SetAttachedConveyor(ParentConveyor, false);
 
 	BombStatus = EBombStatus::BS_Moving;
@@ -105,6 +107,16 @@ void ABGBombBase::OnConveyorDirectionChanged(EConveyorDirection NewDirection)
 	RecalculateTargetPosition();
 }
 
+void ABGBombBase::SetMovingSpeed(float NewSpeed)
+{
+	if (BombStatus >= EBombStatus::BS_Exploded)
+	{
+		return; // Do nothing if pending destroying
+	}
+	CurrentMovingSpeed = NewSpeed;
+	CurrentMovingSpeed = FMath::Clamp(CurrentMovingSpeed, 0.0f, MaxMovingSpeed);
+}
+
 void ABGBombBase::SetAttachedConveyor(ABGConveyorBase* NewConveyor, bool ResetPosition)
 {
 	if (AttachedConveyor == NewConveyor && !ResetPosition)
@@ -112,9 +124,12 @@ void ABGBombBase::SetAttachedConveyor(ABGConveyorBase* NewConveyor, bool ResetPo
 		return;
 	}
 
-	if (AttachedConveyor && AttachedConveyor != NewConveyor)
+	if (AttachedConveyor != NewConveyor)
 	{
-		AttachedConveyor->OnConveyorDirectionChanged.RemoveDynamic(this, &ThisClass::OnConveyorDirectionChanged);
+		if(AttachedConveyor)
+		{ 
+			AttachedConveyor->OnConveyorDirectionChanged.RemoveDynamic(this, &ThisClass::OnConveyorDirectionChanged);
+		}
 		NewConveyor->OnConveyorDirectionChanged.AddDynamic(this, &ThisClass::OnConveyorDirectionChanged);
 	}
 
@@ -174,7 +189,7 @@ void ABGBombBase::RotateMovingToPoint(FVector TargetCenter, float DeltaSeconds, 
 
 void ABGBombBase::OnTriggerBeginOverlap_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ABGBombBase %s id %d OnTriggerBeginOverlap with %s."), *GetName(), BombUniqueId, *OtherActor->GetName());
+	// UE_LOG(LogTemp, Warning, TEXT("ABGBombBase %s id %d OnTriggerBeginOverlap with %s."), *GetName(), BombUniqueId, *OtherActor->GetName());
 
 	OnBombExploded();
 }

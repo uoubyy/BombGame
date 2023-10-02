@@ -33,8 +33,6 @@ ABGCharacter::ABGCharacter()
 
 void ABGCharacter::BeginPlay()
 {
-	Super::BeginPlay();
-
 	if (ActorHasTag("LeftTeam"))
 	{
 		TeamId = ETeamId::TI_Left;
@@ -43,6 +41,8 @@ void ABGCharacter::BeginPlay()
 	{
 		TeamId = ETeamId::TI_Right;
 	}
+
+	Super::BeginPlay();
 }
 
 
@@ -64,7 +64,7 @@ void ABGCharacter::OnCollision(UPrimitiveComponent* OverlappedComponent, AActor*
 
 }
 
-void ABGCharacter::SetPlayerId(int32 NewPlayerId)
+void ABGCharacter::SetPlayerId(FString NewPlayerId)
 {
 	PlayerId = NewPlayerId;
 }

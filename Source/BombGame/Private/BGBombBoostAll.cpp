@@ -34,6 +34,7 @@ void ABGBombBoostAll::BoostAllBombs(float Duration, float Rate)
 	}
 
 // 	GetWorldTimerManager().SetTimer(BoostDurationTimerHandler, this, &ABGBombBoostAll::ReturnToOriginSpeed, 0, false, Duration);
+	GetWorldTimerManager().SetTimer(BoostDurationTimerHandler, this, &ABGBombBoostAll::ReturnToOriginSpeed, Duration, false, 0);
 }
 
 void ABGBombBoostAll::ReturnToOriginSpeed()

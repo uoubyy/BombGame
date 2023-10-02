@@ -49,10 +49,13 @@ public:
 	float GetMovingSpeed() const { return CurrentMovingSpeed; }
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
-	void SetMovingSpeed(float NewSpeed) { CurrentMovingSpeed = NewSpeed; }
+	void SetMovingSpeed(float NewSpeed);
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
 	int32 GetDamageAmount() const { return DamageAmount; }
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
+	int32 GetRewardAmount() const { return RewardAmount; }
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
 	ABGConveyorBase* GetAttachedConveyor() const { return AttachedConveyor; }
@@ -124,7 +127,10 @@ protected:
 private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Bomb")
-	int32 DamageAmount;
+	int32 DamageAmount = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Bomb")
+	int32 RewardAmount = 5;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Bomb")
 	EBombStatus BombStatus;
@@ -142,4 +148,6 @@ private:
 	TObjectPtr<class ABGConveyorBase> AttachedConveyor;
 
 	void RecalculateTargetPosition();
+
+	float MaxMovingSpeed;
 };
