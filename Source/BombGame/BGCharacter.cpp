@@ -67,4 +67,5 @@ void ABGCharacter::OnCollision(UPrimitiveComponent* OverlappedComponent, AActor*
 void ABGCharacter::SetPlayerId(FString NewPlayerId)
 {
 	PlayerId = NewPlayerId;
+	K2_OnPlayerIdSet();
 }

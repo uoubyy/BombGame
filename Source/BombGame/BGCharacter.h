@@ -25,6 +25,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetPlayerId(FString NewPlayerId);
 
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void K2_OnPlayerIdSet();
+
 private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = BombGame, meta = (AllowPrivateAccess = "true"))

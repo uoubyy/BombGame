@@ -61,6 +61,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
 	int32 GetTeamHealthPoints(ETeamId TargetTeam);
 
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
+	const ETeamId GetWinnerTeam() const;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
 	bool IsDebugMode = false;
 
@@ -90,6 +93,8 @@ protected:
 
 	virtual APawn* SpawnDefaultPawnFor_Implementation(AController* NewPlayer, AActor* StartSpot) override;
 
+	virtual APawn* SpawnDefaultPawnAtTransform_Implementation(AController* NewPlayer, const FTransform& SpawnTransform);
+
 private:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Game Mode")
@@ -100,6 +105,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Game Mode")
 	TMap<FName, TObjectPtr<class APlayerStart>> AllStartPoints;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Game Mode")
+	TMap<FString, TSubclassOf<class APawn>> OverridePawnClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Game Mode")
 	int32 MaxHealthPoints = 8;

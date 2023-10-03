@@ -77,6 +77,9 @@ void ABGGameMode::StartPlay()
 
 	TeamsScore.Add({ ETeamId::TI_Left, 0 });
 	TeamsScore.Add({ ETeamId::TI_Right, 0 });
+
+	// TODO: Start
+	ReadyCountDown();
 }
 
 APlayerController* ABGGameMode::Login(UPlayer* NewPlayer, ENetRole InRemoteRole, const FString& Portal, const FString& Options, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
@@ -113,6 +116,32 @@ void ABGGameMode::BeginPlay()
 			BombSpawnManager = Cast<ABGBombSpawnManager>(OutActors[0]);
 		}
 	}
+}
+
+APawn* ABGGameMode::SpawnDefaultPawnAtTransform_Implementation(AController* NewPlayer, const FTransform& SpawnTransform)
+{
+	UClass* PawnClass = nullptr;
+	if (APlayerController* PlayerController = Cast<APlayerController>(NewPlayer))
+	{
+		int32 ControllerId = UGameplayStatics::GetPlayerControllerID(PlayerController);
+		FString PlayerTag = FString::Printf(TEXT("P%d"), ControllerId);
+		if (OverridePawnClass.Contains(PlayerTag))
+		{
+			PawnClass = OverridePawnClass[PlayerTag];
+		}
+	}
+
+	PawnClass = PawnClass ? PawnClass : GetDefaultPawnClassForController(NewPlayer); // Fallback to default pawn class
+
+	FActorSpawnParameters SpawnInfo;
+	SpawnInfo.Instigator = GetInstigator();
+	SpawnInfo.ObjectFlags |= RF_Transient;	// We never want to save default player pawns into a map
+	APawn* ResultPawn = GetWorld()->SpawnActor<APawn>(PawnClass, SpawnTransform, SpawnInfo);
+	if (!ResultPawn)
+	{
+		UE_LOG(LogGameMode, Warning, TEXT("SpawnDefaultPawnAtTransform: Couldn't spawn Pawn of type %s at %s"), *GetNameSafe(PawnClass), *SpawnTransform.ToHumanReadableString());
+	}
+	return ResultPawn;
 }
 
 APawn* ABGGameMode::SpawnDefaultPawnFor_Implementation(AController* NewPlayer, AActor* StartSpot)
@@ -230,6 +259,11 @@ ABGBombSpawnManager* ABGGameMode::GetBombSpawnManager()
 int32 ABGGameMode::GetTeamHealthPoints(ETeamId TargetTeam)
 {
 	return TeamsHealthPoints[TargetTeam];
+}
+
+const ETeamId ABGGameMode::GetWinnerTeam() const
+{
+	return TeamsHealthPoints[ETeamId::TI_Left] == 0 ? ETeamId::TI_Right : ETeamId::TI_Left;
 }
 
 void ABGGameMode::Tick(float DeltaTime)
