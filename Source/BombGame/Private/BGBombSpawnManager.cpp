@@ -122,6 +122,9 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 
 				if (BombOne && BombTwo)
 				{
+					// Disable movement immediately.
+					BombOne->ToggleMovement(false);
+					BombTwo->ToggleMovement(false);
 					K2_OnRandomEventLaneSwitch(BombOne, BombTwo);
 				}
 			}
