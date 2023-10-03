@@ -38,16 +38,13 @@ public:
 	class ABGConveyorBase* GetConveyorrefById(int32 ConveyorId);
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
-	void UpdateReadyPlayers();
-
-	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
-	void ReadyCountDown();
+	void PlayerRequestOnReady(AController* InPlayer);
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
 	EGameState GetGameState();
 
-	UFUNCTION(BlueprintCallable)
-	bool AllPlayersReady();
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
+	bool IsAllPlayersReady();
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
 	void ApplyDamage(ETeamId TargetTeam, int32 DamageAmount);
@@ -66,14 +63,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
 	bool IsDebugMode = false;
-
-	// Total countdown time
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
-	float CountdownTime;
-
-	// Ready start countdown time
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
-	float ReadyCountDownTime = 3.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
 	int PlayerNums = 4;
@@ -112,11 +101,8 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Game Mode")
 	int32 MaxHealthPoints = 8;
 
-	// Elapsed time
-	float ElapsedTime;
-	// Timer handle
-	FTimerHandle CountdownTimerHandle;
-	FTimerHandle ReadyCountdownTimerHandle;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Game Mode")
+	float ElapsedGameTime = 0.0f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Bomb Game|Game Mode")
 	EGameState CurrentGameState = EGameState::GS_Idle;
