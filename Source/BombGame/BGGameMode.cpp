@@ -16,10 +16,6 @@ ABGGameMode::ABGGameMode()
 	// use our custom PlayerController class
 	PlayerControllerClass = ABGPlayerController::StaticClass();
 
-	// Initialize variables
-	ElapsedTime = 0.0f;
-	CountdownTime = 10000;
-
 	ReadyPlayers = 0;
 }
 
@@ -77,9 +73,6 @@ void ABGGameMode::StartPlay()
 
 	TeamsScore.Add({ ETeamId::TI_Left, 0 });
 	TeamsScore.Add({ ETeamId::TI_Right, 0 });
-
-	// TODO: Start
-	ReadyCountDown();
 }
 
 APlayerController* ABGGameMode::Login(UPlayer* NewPlayer, ENetRole InRemoteRole, const FString& Portal, const FString& Options, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
@@ -185,27 +178,20 @@ ABGConveyorBase* ABGGameMode::GetConveyorrefById(int32 ConveyorId)
 	return BombSpawnManager ? BombSpawnManager->GetConveyorrefById(ConveyorId) : nullptr;
 }
 
-void ABGGameMode::UpdateReadyPlayers()
+void ABGGameMode::PlayerRequestOnReady(AController* InPlayer)
 {
 	ReadyPlayers++;
 	UE_LOG(LogTemp, Warning, TEXT("Current readyPlayer : %d"), ReadyPlayers);
 
 	if (IsDebugMode || ReadyPlayers == PlayerNums)
 	{
-		SetGameState(EGameState::GS_Ready);
+		SetGameState(EGameState::GS_Start);
 
-		GetWorldTimerManager().SetTimer(ReadyCountdownTimerHandle, this, &ABGGameMode::ReadyCountDown, ReadyCountDownTime, false, 0);
+		GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([this]()
+			{
+				this->SetGameState(EGameState::GS_InProgress);
+			}));
 	}
-}
-
-void ABGGameMode::ReadyCountDown()
-{
-	SetGameState(EGameState::GS_Start);
-
-	GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([this]()
-	{	
-		this->SetGameState(EGameState::GS_InProgress);
-	}));
 }
 
 EGameState ABGGameMode::GetGameState()
@@ -213,7 +199,7 @@ EGameState ABGGameMode::GetGameState()
 	return CurrentGameState;
 }
 
-bool ABGGameMode::AllPlayersReady()
+bool ABGGameMode::IsAllPlayersReady()
 {
 	return ReadyPlayers == PlayerNums;
 }
@@ -270,10 +256,5 @@ void ABGGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	ElapsedTime += DeltaTime;
-
-	if (CurrentGameState == EGameState::GS_Start)
-	{
-		CountdownTime -= DeltaTime;
-	}
+	ElapsedGameTime += DeltaTime;
 }
