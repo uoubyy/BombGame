@@ -131,7 +131,10 @@ void ABGBombBase::SetAttachedConveyor(ABGConveyorBase* NewConveyor, bool ResetPo
 		{ 
 			AttachedConveyor->OnConveyorDirectionChanged.RemoveDynamic(this, &ThisClass::OnConveyorDirectionChanged);
 		}
-		NewConveyor->OnConveyorDirectionChanged.AddDynamic(this, &ThisClass::OnConveyorDirectionChanged);
+		if(NewConveyor)
+		{ 
+			NewConveyor->OnConveyorDirectionChanged.AddDynamic(this, &ThisClass::OnConveyorDirectionChanged);
+		}
 	}
 
 	AttachedConveyor = NewConveyor;
@@ -202,6 +205,11 @@ void ABGBombBase::OnBombExploded()
 		return;
 	}
 
+	if (AttachedConveyor)
+	{
+		AttachedConveyor->OnConveyorDirectionChanged.RemoveDynamic(this, &ThisClass::OnConveyorDirectionChanged);
+	}
+
 	BombStatus = EBombStatus::BS_Exploded;
 
 	ToggleVisibilityAndCollision(false);
@@ -219,7 +227,7 @@ void ABGBombBase::PostBombExploded_Implementation()
 	// The AttachedConveyor is set to nullptr before Request Spawn New Bomb will cause issue
 	OnBombExplodedDelegate.Broadcast(CurrentMovingDirection, AttachedConveyorId, DamageAmount, BombUniqueId);
 
-	AttachedConveyor = nullptr;
+	// AttachedConveyor = nullptr;
 	Destroy();
 }
 
@@ -236,6 +244,11 @@ void ABGBombBase::ToggleVisibilityAndCollision(bool EnableOrNot)
 
 void ABGBombBase::RecalculateTargetPosition()
 {
+	if (BombStatus >= EBombStatus::BS_Exploded)
+	{
+		return;
+	}
+
 	if (!AttachedConveyor)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("RecalculateTargetPosition but AttachedConveyor is nullptr"));
