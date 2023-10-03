@@ -6,7 +6,7 @@
 #include <Components/StaticMeshComponent.h>
 #include <Components/SphereComponent.h>
 #include "BGConveyorBase.h"
-
+#include "Kismet/GameplayStatics.h"
 #include "Math/UnrealMathUtility.h"
 #include "Math/Vector.h"
 #include <UMG/Public/Components/WidgetComponent.h>
@@ -115,6 +115,7 @@ void ABGBombBase::SetMovingSpeed(float NewSpeed)
 	}
 	CurrentMovingSpeed = NewSpeed;
 	CurrentMovingSpeed = FMath::Clamp(CurrentMovingSpeed, 0.0f, MaxMovingSpeed);
+	AttachedConveyor->K2_OnMovingSpeedChanged(CurrentMovingSpeed);
 }
 
 void ABGBombBase::SetAttachedConveyor(ABGConveyorBase* NewConveyor, bool ResetPosition)
@@ -206,6 +207,8 @@ void ABGBombBase::OnBombExploded()
 	OnBombExplodedDelegate.Broadcast(CurrentMovingDirection, AttachedConveyorId, DamageAmount, BombUniqueId);
 
 	ToggleVisibilityAndCollision(false);
+
+	UGameplayStatics::PlaySound2D(this, ExplodeSoundWave);
 
 	// TODO: Timer type bomb we need test the position to decide damage direction
 
