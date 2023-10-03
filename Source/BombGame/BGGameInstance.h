@@ -7,7 +7,7 @@
 #include "BGGameplayEnum.h"
 #include "BGGameInstance.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnControllerConnectionChangedDelegate, bool, IsConnected, FPlatformUserId, PlatformID, int32, UserID);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnControllerConnectionChangedDelegate, bool, IsConnected, FPlatformUserId, InUserId, int32, InDeviceId);
 
 /**
  * 
