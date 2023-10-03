@@ -20,9 +20,14 @@ protected:
 	TMap<ETeamId, FString> TeamNames;
 
 public:
+	virtual void Init() override;
+
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|GameInstance")
 	void SetTeamName(const ETeamId TargetTeam, const FString& InTeamName);
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|GameInstance")
 	const FString GetTeamName(const ETeamId TargetTeam);
+
+	UFUNCTION()
+	void OnControllerConnectionChanged(bool IsConnected, FPlatformUserId PlatformID, int32 UserID);
 };
