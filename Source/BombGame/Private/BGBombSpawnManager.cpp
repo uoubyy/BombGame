@@ -318,8 +318,8 @@ void ABGBombSpawnManager::OnBombDestroyed(const EConveyorDirection MovingDirecti
 
 	if(IsGameInProgress())
 	{ 
-		GameModeRef->ApplyDamage(TargetTeam, AllActiveBombs[BombId]->GetDamageAmount());
 		GameModeRef->AddRewards(InstigatorTeam, AllActiveBombs[BombId]->GetRewardAmount());
+		GameModeRef->ApplyDamage(TargetTeam, AllActiveBombs[BombId]->GetDamageAmount());
 	}
 
 	AllActiveBombs.Remove(BombId);
