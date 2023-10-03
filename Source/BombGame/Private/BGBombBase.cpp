@@ -131,7 +131,7 @@ void ABGBombBase::SetAttachedConveyor(ABGConveyorBase* NewConveyor, bool ResetPo
 		{ 
 			AttachedConveyor->OnConveyorDirectionChanged.RemoveDynamic(this, &ThisClass::OnConveyorDirectionChanged);
 		}
-		if(NewConveyor)
+		if(NewConveyor && BombStatus < EBombStatus::BS_Exploded)
 		{ 
 			NewConveyor->OnConveyorDirectionChanged.AddDynamic(this, &ThisClass::OnConveyorDirectionChanged);
 		}

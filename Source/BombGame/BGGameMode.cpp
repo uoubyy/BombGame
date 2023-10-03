@@ -42,31 +42,6 @@ void ABGGameMode::InitGame(const FString& MapName, const FString& Options, FStri
 void ABGGameMode::StartPlay()
 {
 	Super::StartPlay();
-	
-	{
-		TArray<AActor*> OutActors;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABGCharacter::StaticClass(), OutActors);
-
-		ensureMsgf(OutActors.Num() > 0, TEXT("Failed to find any Player in the Level"));
-
-		for (auto TargetActor : OutActors)
-		{
-			if (ABGCharacter* BGCharacter = Cast<ABGCharacter>(TargetActor))
-			{
-				if(ABGPlayerState* BGPlayerState = BGCharacter->GetPlayerState<ABGPlayerState>())
-				{ 
-					if (BGCharacter->ActorHasTag(FName("LeftTeam")))
-					{
-						BGPlayerState->SetPlayerTeamId(ETeamId::TI_Left);
-					}
-					else
-					{
-						BGPlayerState->SetPlayerTeamId(ETeamId::TI_Right);
-					}
-				}
-			}
-		}
-	}
 
 	TeamsHealthPoints.Add({ ETeamId::TI_Left, MaxHealthPoints });
 	TeamsHealthPoints.Add({ ETeamId::TI_Right, MaxHealthPoints });
@@ -147,17 +122,17 @@ APawn* ABGGameMode::SpawnDefaultPawnFor_Implementation(AController* NewPlayer, A
 		PlayerTag = FString::Printf(TEXT("P%d"), ControllerId);
 
 		StartSpot = AllStartPoints[FName(PlayerTag)];
+
+		if (ABGPlayerState* BGPlayerState = PlayerController->GetPlayerState<ABGPlayerState>())
+		{
+			BGPlayerState->SetPlayerTeamId(ControllerId < PlayerNums / 2 ? ETeamId::TI_Left : ETeamId::TI_Right);
+		}
 	}
 
+	FName PlayerTeamTag = ControllerId < PlayerNums / 2 ? FName("LeftTeam") : FName("RightTeam");
+
 	APawn* NewPawn = Super::SpawnDefaultPawnFor_Implementation(NewPlayer, StartSpot);
-	if(ControllerId < PlayerNums / 2)
-	{ 
-		NewPawn->Tags.Add("LeftTeam");
-	}
-	else
-	{
-		NewPawn->Tags.Add("RightTeam");
-	}
+	NewPawn->Tags.Add(PlayerTeamTag);
 
 	if (ABGCharacter* NewCharacter = Cast<ABGCharacter>(NewPawn))
 	{
