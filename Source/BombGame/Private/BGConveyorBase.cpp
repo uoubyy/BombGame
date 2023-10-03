@@ -3,6 +3,7 @@
 
 #include "BGConveyorBase.h"
 #include <Components/SphereComponent.h>
+#include "Kismet/GameplayStatics.h"
 
 #include "../BGPlayerState.h"
 #include "../BGCharacter.h"
@@ -69,6 +70,7 @@ void ABGConveyorBase::OnConveyorTapped(class ABGCharacter* SourcePlayer)
 		BGPlayerState->OnTapSucceed();
 		LastPressedTeam = SourcePlayer->GetPlayerState<ABGPlayerState>()->GetPlayerTeamId();
 		UpdateDirectionBasedOnTeam();
+		UGameplayStatics::PlaySound2D(this, TapSuccessSoundWave);
 	}
 }
 
