@@ -74,6 +74,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Bomb Game|Conveyor")
 	void K2_OnMovingDirectionChanged();
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Bomb Game|Conveyor")
+	void K2_OnMovingSpeedChanged(float NewMovingSpeed);
+
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
 	void OnConveyorTapped(class ABGCharacter* SourcePlayer);
 
@@ -82,6 +85,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnConveyorDirectionChangedDelegate OnConveyorDirectionChanged;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Bomb Game|Conveyor")
+	USoundWave* TapSuccessSoundWave;
 
 protected:
 	

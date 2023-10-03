@@ -21,6 +21,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	TArray<TObjectPtr<class UBGUserWidget_RecordItem>> Top10Records;
 
+public:
 	UFUNCTION(BlueprintCallable)
 	void UpdateTop10Records(const TMap<int32, struct FRecordDetail>& InTop10Records);
 	

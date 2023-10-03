@@ -39,6 +39,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnBombExplodedDelegate OnBombExplodedDelegate;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Bomb Game|Bomb")
+	USoundWave* ExplodeSoundWave;
+
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
 	void OnConveyorDirectionChanged(EConveyorDirection NewDirection);
 
