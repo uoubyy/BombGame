@@ -19,6 +19,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bomb Game|GameInstance")
 	TMap<ETeamId, FString> TeamNames;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bomb Game|GameInstance")
+	TSoftObjectPtr<class UWorld> SelectedMapRef;
+
 public:
 	virtual void Init() override;
 
@@ -27,6 +30,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|GameInstance")
 	const FString GetTeamName(const ETeamId TargetTeam);
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|GameInstance")
+	TSoftObjectPtr<class UWorld> GetSelectedMapRef() const { return SelectedMapRef; }
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|GameInstance")
+	void SetSelectedMap(TSoftObjectPtr<class UWorld> InLevelRef) { SelectedMapRef  = InLevelRef; }
 
 	UFUNCTION()
 	void OnControllerConnectionChanged(bool IsConnected, FPlatformUserId PlatformID, int32 UserID);

@@ -6,6 +6,7 @@
 
 void UBGGameInstance::Init()
 {
+	Super::Init();
 	FCoreDelegates::OnControllerConnectionChange.AddUObject(this, &ThisClass::OnControllerConnectionChanged);
 }
 

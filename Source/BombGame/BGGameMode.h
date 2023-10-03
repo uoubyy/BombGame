@@ -61,6 +61,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
 	int32 GetTeamHealthPoints(ETeamId TargetTeam);
 
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Game Mode")
+	const ETeamId GetWinnerTeam() const;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
 	bool IsDebugMode = false;
 

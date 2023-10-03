@@ -77,6 +77,9 @@ void ABGGameMode::StartPlay()
 
 	TeamsScore.Add({ ETeamId::TI_Left, 0 });
 	TeamsScore.Add({ ETeamId::TI_Right, 0 });
+
+	// TODO: Start
+	ReadyCountDown();
 }
 
 APlayerController* ABGGameMode::Login(UPlayer* NewPlayer, ENetRole InRemoteRole, const FString& Portal, const FString& Options, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
@@ -256,6 +259,11 @@ ABGBombSpawnManager* ABGGameMode::GetBombSpawnManager()
 int32 ABGGameMode::GetTeamHealthPoints(ETeamId TargetTeam)
 {
 	return TeamsHealthPoints[TargetTeam];
+}
+
+const ETeamId ABGGameMode::GetWinnerTeam() const
+{
+	return TeamsHealthPoints[ETeamId::TI_Left] == 0 ? ETeamId::TI_Right : ETeamId::TI_Left;
 }
 
 void ABGGameMode::Tick(float DeltaTime)

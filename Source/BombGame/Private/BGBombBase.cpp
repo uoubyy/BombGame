@@ -204,8 +204,6 @@ void ABGBombBase::OnBombExploded()
 
 	BombStatus = EBombStatus::BS_Exploded;
 
-	OnBombExplodedDelegate.Broadcast(CurrentMovingDirection, AttachedConveyorId, DamageAmount, BombUniqueId);
-
 	ToggleVisibilityAndCollision(false);
 
 	UGameplayStatics::PlaySound2D(this, ExplodeSoundWave);
@@ -217,6 +215,10 @@ void ABGBombBase::OnBombExploded()
 
 void ABGBombBase::PostBombExploded_Implementation()
 {
+	// TODO: OnBombExplodedDelegate -> SpawnManager Request Spawn New Bomb 
+	// The AttachedConveyor is set to nullptr before Request Spawn New Bomb will cause issue
+	OnBombExplodedDelegate.Broadcast(CurrentMovingDirection, AttachedConveyorId, DamageAmount, BombUniqueId);
+
 	AttachedConveyor = nullptr;
 	Destroy();
 }
