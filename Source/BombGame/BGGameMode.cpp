@@ -169,7 +169,19 @@ APawn* ABGGameMode::SpawnDefaultPawnFor_Implementation(AController* NewPlayer, A
 
 void ABGGameMode::SetGameState(const EGameState NewGameState)
 {
+	if (CurrentGameState == NewGameState)
+	{
+		return;
+	}
 	CurrentGameState = NewGameState;
+
+	if(NewGameState == EGameState::GS_Start)
+	{ 
+		GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([this]()
+			{
+				this->SetGameState(EGameState::GS_InProgress);
+			}));
+	}
 	OnGameStateChanged.Broadcast(CurrentGameState);
 }
 
@@ -186,11 +198,6 @@ void ABGGameMode::PlayerRequestOnReady(AController* InPlayer)
 	if (IsDebugMode || ReadyPlayers == PlayerNums)
 	{
 		SetGameState(EGameState::GS_Start);
-
-		GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([this]()
-			{
-				this->SetGameState(EGameState::GS_InProgress);
-			}));
 	}
 }
 
