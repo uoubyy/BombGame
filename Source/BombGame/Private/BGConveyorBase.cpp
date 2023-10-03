@@ -60,7 +60,7 @@ void ABGConveyorBase::SetCurrentMovingDirection(EConveyorDirection NewDirection)
 	OnConveyorDirectionChanged.Broadcast(CurrentMovingDirection);
 }
 
-void ABGConveyorBase::OnConveyorTapped(class ABGCharacter* SourcePlayer)
+bool ABGConveyorBase::OnConveyorTapped(class ABGCharacter* SourcePlayer)
 {
 	ABGPlayerState* BGPlayerState = SourcePlayer->GetPlayerState<ABGPlayerState>();
 	
@@ -71,7 +71,9 @@ void ABGConveyorBase::OnConveyorTapped(class ABGCharacter* SourcePlayer)
 		LastPressedTeam = SourcePlayer->GetPlayerState<ABGPlayerState>()->GetPlayerTeamId();
 		UpdateDirectionBasedOnTeam();
 		UGameplayStatics::PlaySound2D(this, TapSuccessSoundWave);
+		return true;
 	}
+	return false;
 }
 
 void ABGConveyorBase::ReverseMovingDirection()

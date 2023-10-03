@@ -78,7 +78,7 @@ public:
 	void K2_OnMovingSpeedChanged(float NewMovingSpeed);
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
-	void OnConveyorTapped(class ABGCharacter* SourcePlayer);
+	bool OnConveyorTapped(class ABGCharacter* SourcePlayer);
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Conveyor")
 	void ReverseMovingDirection();
