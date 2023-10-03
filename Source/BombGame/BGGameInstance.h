@@ -7,6 +7,8 @@
 #include "BGGameplayEnum.h"
 #include "BGGameInstance.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnControllerConnectionChangedDelegate, bool, IsConnected, FPlatformUserId, PlatformID, int32, UserID);
+
 /**
  * 
  */
@@ -38,5 +40,8 @@ public:
 	void SetSelectedMap(TSoftObjectPtr<class UWorld> InLevelRef) { SelectedMapRef  = InLevelRef; }
 
 	UFUNCTION()
-	void OnControllerConnectionChanged(bool IsConnected, FPlatformUserId PlatformID, int32 UserID);
+	void OnControllerConnectionChanged(bool IsConnected, FPlatformUserId InUserId, int32 InDeviceId);
+
+	UPROPERTY(BlueprintAssignable)
+	FOnControllerConnectionChangedDelegate OnControllerConnectionChangedDelegate;
 };

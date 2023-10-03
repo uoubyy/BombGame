@@ -17,10 +17,12 @@ void UBGGameInstance::SetTeamName(const ETeamId TargetTeam, const FString& InTea
 	UE_LOG(LogTemp, Warning, TEXT("Set Team Name: %s"), *InTeamName);
 }
 
-void UBGGameInstance::OnControllerConnectionChanged(bool IsConnected, FPlatformUserId PlatformID, int32 UserID)
+void UBGGameInstance::OnControllerConnectionChanged(bool IsConnected, FPlatformUserId InUserId, int32 InDeviceId)
 {
 	FString StrIsConnected = IsConnected ? "Connected" : "DisConnected";
-	UE_LOG(LogTemp, Warning, TEXT("OnControllerConnectionChanged %d %d %s"), PlatformID, UserID, *StrIsConnected);
+	UE_LOG(LogTemp, Warning, TEXT("OnControllerConnectionChanged: UserId %d DeviceId %d %s"), InUserId, InDeviceId, *StrIsConnected);
+
+	OnControllerConnectionChangedDelegate.Broadcast(IsConnected, InUserId, InDeviceId);
 }
 
 const FString UBGGameInstance::GetTeamName(const ETeamId TargetTeam)

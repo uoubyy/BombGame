@@ -19,50 +19,13 @@ class ABGPlayerController : public APlayerController
 public:
 	ABGPlayerController();
 
-	/** Time Threshold to know if it was a short press */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	float ShortPressThreshold;
+	virtual void PostInitializeComponents() override;
 
-	/** FX Class that we will spawn when clicking */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UNiagaraSystem* FXCursor;
+	UFUNCTION()
+	void OnControllerConnectionChanged(bool IsConnected, FPlatformUserId InUserId, int32 InDeviceId);
 
-	/** MappingContext */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	class UInputMappingContext* DefaultMappingContext;
-	
-	/** Jump Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	class UInputAction* SetDestinationClickAction;
-
-	/** Jump Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	class UInputAction* SetDestinationTouchAction;
-
-protected:
-	/** True if the controlled character should navigate to the mouse cursor. */
-	uint32 bMoveToMouseCursor : 1;
-
-	virtual void SetupInputComponent() override;
-	
-	// To add mapping context
-	virtual void BeginPlay();
-
-	/** Input handlers for SetDestination action. */
-	void OnInputStarted();
-	void OnSetDestinationTriggered();
-	void OnSetDestinationReleased();
-	void OnTouchTriggered();
-	void OnTouchReleased();
-
-	UFUNCTION(BlueprintCallable, Category = "Bomb Game|PlayerController")
-	void ToggleReadyStatus(bool ReadyOrNot);
-
-private:
-	FVector CachedDestination;
-
-	bool bIsTouch; // Is it a touch device
-	float FollowTime; // For how long it has been pressed
+	UFUNCTION(BlueprintImplementableEvent, Category = "Bomb Game|PlayerController")
+	void K2_OnControllerConnectionChanged(bool IsConnected, FPlatformUserId InUserId, int32 InDeviceId);
 };
 
 
