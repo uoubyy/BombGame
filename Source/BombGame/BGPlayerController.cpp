@@ -31,5 +31,8 @@ void ABGPlayerController::OnControllerConnectionChanged(bool IsConnected, FPlatf
 {
 	if (IsConnected && GetPlatformUserId() == InUserId)
 	{
+		
 	}
+
+	K2_OnControllerConnectionChanged(IsConnected, InUserId, InDeviceId);
 }
