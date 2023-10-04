@@ -81,6 +81,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
 	void RotateMovingToPoint(FVector TargetCenter, float DeltaSeconds, float Speed, float InitDist);
 
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|Bomb")
+	const bool IsBombAlive() const { return BombStatus < EBombStatus::BS_Exploded; }
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")

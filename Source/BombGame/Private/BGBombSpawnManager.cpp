@@ -61,7 +61,7 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 		{
 			RandomEvent.HasUsed = true;
 			++ActivatedRandomEventsCnt;
-			OnRandomEventActivated.Broadcast(RandomEvent.EventType, RandomEvent.RandomEventName, RandomEvent.RandomEventDes);
+			bool ActivateRandomEventSuccess = false;
 
 			switch (RandomEvent.EventType)
 			{
@@ -73,6 +73,7 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 						ConveyorInfo.Value->ReverseMovingDirection();
 					}
 				}
+				ActivateRandomEventSuccess = true;
 				break;
 
 			case ERandomEventType::RET_BoostAll:
@@ -89,7 +90,7 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 						UE_LOG(LogTemp, Warning, TEXT("Boost bomb boost speed: %f"), TargetSpeed);
 					}
 				}
-
+				ActivateRandomEventSuccess = true;
 				break;
 
 			case ERandomEventType::RET_SwitchLane:
@@ -121,29 +122,40 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 					}
 				}
 
-				if (BombOne && BombTwo)
+				if (BombOne && BombOne->IsBombAlive() && BombTwo && BombTwo->IsBombAlive())
 				{
 					// Disable movement immediately.
 					BombOne->ToggleMovement(false);
 					BombTwo->ToggleMovement(false);
 					K2_OnRandomEventLaneSwitch(BombOne, BombTwo);
+
+					ActivateRandomEventSuccess = true;
 				}
 			}
 
 			break;
 			case ERandomEventType::RET_AddBomb:
-				for (auto ConveyorInfo : AllConveyors) {
-					if (ConveyorInfo.Value) {
+				for (auto ConveyorInfo : AllConveyors)
+				{
+					if (ConveyorInfo.Value)
+					{
 						TSubclassOf<class ABGBombBase> ChildBombClass;
-						for (auto& BombInfo : AllActiveBombs) {
-							if (BombInfo.Value->GetAttachedConveyor()->GetConveyorId() == ConveyorInfo.Value->GetConveyorId()) {
-								if (BombInfo.Value->GetDamageAmount() > 0){ // don't add another damage bomb if there is already one on the conveyor
+						for (auto& BombInfo : AllActiveBombs)
+						{
+							if (BombInfo.Value->GetAttachedConveyor()->GetConveyorId() == ConveyorInfo.Value->GetConveyorId())
+							{
+								if (BombInfo.Value->GetDamageAmount() > 0)
+								{ 
+									// don't add another damage bomb if there is already one on the conveyor
 									ChildBombClass = RandomEvent.ChildBombClass;
-								}else{
+								}
+								else
+								{
 									int32 BombTypeCnt = AllBombTypeClass.Num();
 									int32 NewBombTypeIndex = FMath::RandRange(0, BombTypeCnt - 1);
 									ChildBombClass = AllBombTypeClass[NewBombTypeIndex];
 								}
+								break;
 							}
 						}
 						ABGBombBase* NewBomb = RequestSpawnNewBombByType(ConveyorInfo.Value->GetConveyorId(), ChildBombClass);
@@ -160,9 +172,14 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 						BombInfo.Value->ToggleMovement(false);
 					}
 				}
+				ActivateRandomEventSuccess = true;
 				break;
 			}
 
+			if (ActivateRandomEventSuccess)
+			{
+				OnRandomEventActivated.Broadcast(RandomEvent.EventType, RandomEvent.RandomEventName, RandomEvent.RandomEventDes);
+			}
 		}
 	}
 
