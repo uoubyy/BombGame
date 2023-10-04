@@ -25,5 +25,5 @@ public:
 	TMap<int32, FRecordDetail> Top10Records;
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|SaveGame")
-	bool TryAddRecordToTop10(const FRecordDetail& RecordDetail);
+	int32 TryAddRecordToTop10(const FRecordDetail& RecordDetail);
 };

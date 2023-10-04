@@ -11,7 +11,7 @@ UBGSaveGame::UBGSaveGame()
 	}
 }
 
-bool UBGSaveGame::TryAddRecordToTop10(const FRecordDetail& RecordDetail)
+int32 UBGSaveGame::TryAddRecordToTop10(const FRecordDetail& RecordDetail)
 {
 	int32 Index = 0;
 	for (; Index < MaxRecordCnt; ++Index)
@@ -32,5 +32,5 @@ bool UBGSaveGame::TryAddRecordToTop10(const FRecordDetail& RecordDetail)
 		Top10Records[Index] = RecordDetail;
 	}
 
-	return Index < MaxRecordCnt;
+	return Index;// < MaxRecordCnt;
 }

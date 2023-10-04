@@ -82,7 +82,8 @@ void UBGUserWidget_GameStatistics::UpdatePlayerStatisticInfo(FString TargetPlaye
 		(*TextItem)->SetText(FText::AsNumber(StunCnt));
 	}
 
-	if (Text_MPV && TapCnt > MPVScore)
+	// Disable
+	if (false && Text_MPV && TapCnt > MPVScore)
 	{
 		Text_MPV->SetVisibility(ESlateVisibility::HitTestInvisible);
 		MPVScore = TapCnt;

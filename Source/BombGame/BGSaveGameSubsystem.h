@@ -21,6 +21,9 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class UBGSaveGame> CurrentSaveGame;
 
+	UPROPERTY()
+	int32 LatestRecordRank = 0;
+
 public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|SaveGameSystem")
@@ -36,4 +39,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Bomb Game|SaveGameSystem")
 	bool TryAddRecordToTop10(const FString& TeamName, const int32 TeamScore);
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Game|SaveGameSystem")
+	const int32 GetLatestRecordRank() const { return LatestRecordRank; }
 };

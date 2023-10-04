@@ -31,7 +31,7 @@ bool UBGUserWidget_Top10Records::Initialize()
 	return Result;
 }
 
-void UBGUserWidget_Top10Records::UpdateTop10Records(const TMap<int32, struct FRecordDetail>& InTop10Records)
+void UBGUserWidget_Top10Records::UpdateTop10Records(const TMap<int32, struct FRecordDetail>& InTop10Records, int32 CurrentRecordRank)
 {
 	for (int Id = 0; Id < 10; ++Id)
 	{
@@ -42,7 +42,7 @@ void UBGUserWidget_Top10Records::UpdateTop10Records(const TMap<int32, struct FRe
 		else
 		{
 			Top10Records[Id]->SetVisibility(ESlateVisibility::HitTestInvisible);
-			Top10Records[Id]->UpdateRecordItem(InTop10Records[Id].TeamName, InTop10Records[Id].TeamScore);
+			Top10Records[Id]->UpdateRecordItem(InTop10Records[Id].TeamName, InTop10Records[Id].TeamScore, CurrentRecordRank == Id);
 		}
 	}
 }

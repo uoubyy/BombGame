@@ -24,5 +24,5 @@ protected:
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void UpdateRecordItem(const FString& InTeamName, const int32 InTeamScore);
+	void UpdateRecordItem(const FString& InTeamName, const int32 InTeamScore, bool LatestRecord);
 };

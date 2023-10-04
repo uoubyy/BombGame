@@ -56,5 +56,7 @@ bool UBGSaveGameSubsystem::TryAddRecordToTop10(const FString& TeamName, const in
 	// In case no save game loaded or created
 	GetTop10Records();
 	
-	return CurrentSaveGame->TryAddRecordToTop10(FRecordDetail(TeamName, TeamScore));
+	LatestRecordRank = CurrentSaveGame->TryAddRecordToTop10(FRecordDetail(TeamName, TeamScore));
+
+	return LatestRecordRank < 10;
 }

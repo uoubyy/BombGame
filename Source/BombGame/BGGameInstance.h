@@ -40,7 +40,7 @@ public:
 	void SetSelectedMap(TSoftObjectPtr<class UWorld> InLevelRef) { SelectedMapRef  = InLevelRef; }
 
 	UFUNCTION()
-	void OnControllerConnectionChanged(bool IsConnected, FPlatformUserId InUserId, int32 InDeviceId);
+	void OnControllerConnectionChanged(EInputDeviceConnectionState IsConnected, FPlatformUserId InUserId, FInputDeviceId InDeviceId);
 
 	UPROPERTY(BlueprintAssignable)
 	FOnControllerConnectionChangedDelegate OnControllerConnectionChangedDelegate;
