@@ -49,7 +49,7 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 		return;
 	}
 
-	ElapsedTime += DeltaSeconds;
+	ElapsedGameTime += DeltaSeconds;
 	for (auto& RandomEvent : AllRandomEvents)
 	{
 		if (RandomEvent.HasUsed)
@@ -57,9 +57,10 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 			continue;
 		}
 
-		if (RandomEvent.ActiveTime <= ElapsedTime)
+		if (RandomEvent.ActiveTime <= ElapsedGameTime)
 		{
 			RandomEvent.HasUsed = true;
+			++ActivatedRandomEventsCnt;
 			OnRandomEventActivated.Broadcast(RandomEvent.EventType, RandomEvent.RandomEventName, RandomEvent.RandomEventDes);
 
 			switch (RandomEvent.EventType)
@@ -163,6 +164,18 @@ void ABGBombSpawnManager::Tick(float DeltaSeconds)
 			}
 
 		}
+	}
+
+	// if all random events got activated, reset them
+	if (ActivatedRandomEventsCnt >= AllRandomEvents.Num())
+	{
+		for (auto& RandomEvent : AllRandomEvents)
+		{
+			RandomEvent.ActiveTime += ElapsedGameTime;
+			RandomEvent.HasUsed = false;
+		}
+
+		ActivatedRandomEventsCnt = 0;
 	}
 }
 

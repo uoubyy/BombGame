@@ -96,9 +96,10 @@ private:
 
 	class ABGBombBase* SpawnNewBombHelper(int32 ConveyorId, TSubclassOf<class ABGBombBase> BombClass, class ABGConveyorBase* ParentConveyor);
 
-	float ElapsedTime;
+	float ElapsedGameTime = 0.0f;
 
 	EGameState CurrentGameState = EGameState::GS_Idle;
+	int ActivatedRandomEventsCnt = 0;
 
 	// TODO: Do not modify
 	int32 BombUniqueId = 1;
