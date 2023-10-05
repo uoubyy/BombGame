@@ -70,7 +70,7 @@ bool ABGConveyorBase::OnConveyorTapped(class ABGCharacter* SourcePlayer)
 		BGPlayerState->OnTapSucceed();
 		LastPressedTeam = SourcePlayer->GetPlayerState<ABGPlayerState>()->GetPlayerTeamId();
 		UpdateDirectionBasedOnTeam();
-		UGameplayStatics::PlaySound2D(this, TapSuccessSoundWave);
+		UGameplayStatics::PlaySound2D(this, TapSuccessSoundWave, 2.0f);
 		return true;
 	}
 	return false;

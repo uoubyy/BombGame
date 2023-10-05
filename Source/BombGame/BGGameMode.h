@@ -67,6 +67,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
 	int PlayerNums = 4;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bomb Game|Game Mode")
+	int32 ExtraBonusForHealth = 30;
+
 	UPROPERTY(BlueprintAssignable, Category = "Bomb Game|Game Mode")
 	FOnGameStateChangedDelegate OnGameStateChanged;
 

@@ -72,18 +72,7 @@ void ABGGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	{
-		TArray<AActor*> OutActors;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABGBombSpawnManager::StaticClass(), OutActors);
-
-		// ensureMsgf(OutActors.Num() == 1, TEXT("Failed to find a Bomb Spawn Manager in the Level"));
-		UE_LOG(LogTemp, Warning, TEXT("Failed to find a Bomb Spawn Manager in the Level."));
-
-		if (OutActors.Num() == 1)
-		{
-			BombSpawnManager = Cast<ABGBombSpawnManager>(OutActors[0]);
-		}
-	}
+	GetBombSpawnManager();
 }
 
 APawn* ABGGameMode::SpawnDefaultPawnAtTransform_Implementation(AController* NewPlayer, const FTransform& SpawnTransform)
@@ -192,6 +181,8 @@ void ABGGameMode::ApplyDamage(ETeamId TargetTeam, int32 DamageAmount)
 
 	if (TeamsHealthPoints[TargetTeam] <= 0)
 	{
+		ETeamId WinnerTeam = TargetTeam == ETeamId::TI_Left ? ETeamId::TI_Right : ETeamId::TI_Left;
+		// TeamsScore[WinnerTeam] += TeamsHealthPoints[WinnerTeam] * 
 		SetGameState(EGameState::GS_End);
 		TeamsHealthPoints[TargetTeam] = 0;
 
@@ -200,7 +191,6 @@ void ABGGameMode::ApplyDamage(ETeamId TargetTeam, int32 DamageAmount)
 		UBGGameInstance* GameInstance = Cast<UBGGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 		if (UBGSaveGameSubsystem* BGSaveGameSubsystem = GameInstance->GetSubsystem<UBGSaveGameSubsystem>())
 		{
-			ETeamId WinnerTeam = TargetTeam == ETeamId::TI_Left ? ETeamId::TI_Right : ETeamId::TI_Left;
 			FString TeamName = GameInstance->GetTeamName(WinnerTeam);
 			BGSaveGameSubsystem->TryAddRecordToTop10(TeamName, TeamsScore[WinnerTeam]);
 
@@ -221,6 +211,19 @@ void ABGGameMode::AddRewards(ETeamId TargetTeam, int32 RewardAmount)
 
 ABGBombSpawnManager* ABGGameMode::GetBombSpawnManager()
 {
+	if (!BombSpawnManager)
+	{
+		TArray<AActor*> OutActors;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABGBombSpawnManager::StaticClass(), OutActors);
+
+		// ensureMsgf(OutActors.Num() == 1, TEXT("Failed to find a Bomb Spawn Manager in the Level"));
+		UE_LOG(LogTemp, Warning, TEXT("Failed to find a Bomb Spawn Manager in the Level."));
+
+		if (OutActors.Num() == 1)
+		{
+			BombSpawnManager = Cast<ABGBombSpawnManager>(OutActors[0]);
+		}
+	}
 	return BombSpawnManager;
 }
 

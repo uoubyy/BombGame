@@ -214,7 +214,10 @@ void ABGBombBase::OnBombExploded()
 
 	ToggleVisibilityAndCollision(false);
 
-	UGameplayStatics::PlaySound2D(this, ExplodeSoundWave);
+	if(ExplodeSoundWave)
+	{ 
+		UGameplayStatics::PlaySound2D(this, ExplodeSoundWave);
+	}
 
 	// TODO: Timer type bomb we need test the position to decide damage direction
 
